@@ -23,15 +23,25 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 유저 정보 조회
+     * @param dto
+     * @return
+     */
     @Transactional(readOnly = true)
     public Boolean existUser(UserRequestDTO dto) {
-        return userRepository.existByUsername(dto.getUsername());
+        return userRepository.existsByUsername(dto.getUsername());
     }
 
+    /**
+     * 회원가입(유저 추가)
+     * @param dto
+     * @return
+     */
     @Transactional
     public Long addUser(UserRequestDTO dto) {
 
-        if(userRepository.existByUsername(dto.getUsername())) {
+        if(userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("이미 유저가 존재합니다.");
         }
 
@@ -48,6 +58,12 @@ public class UserService implements UserDetailsService {
         return userRepository.save(newUser).getId();
     }
 
+    /**
+     * 유저 업데이트
+     * @param dto
+     * @return
+     * @throws AccessDeniedException
+     */
     @Transactional
     public Long updateUser(UserRequestDTO dto) throws AccessDeniedException {
 
@@ -64,6 +80,12 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user).getId();
     }
 
+    /**
+     * 자체 로그인
+     * @param username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -78,13 +100,4 @@ public class UserService implements UserDetailsService {
                 .accountLocked(user.getIsLock())
                 .build();
     }
-
-
-
-
-
-
-
-
-
 }
