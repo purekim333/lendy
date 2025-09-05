@@ -28,10 +28,10 @@ public class JwtService {
     }
 
     public void removeRefresh(String refreshToken){
-        refreshRepository.deletedByRefresh(refreshToken);
+        refreshRepository.deleteByRefresh(refreshToken);
     }
 
     public void removeRefreshUser(String username){
-        refreshRepository.deletedByUsername(username);
+        refreshRepository.deleteByUsername(username);
     }
 }
