@@ -6,6 +6,8 @@ import Header from "./components/Header";
 import AsidePromotion from "./components/AsidePromotion";
 import Login from "./pages/Login";
 import LoginRequiredPage from "./pages/LoginRequiredPage";
+import Search from "./pages/Search";
+import ProductsPage from "./pages/ProductsPage";
 
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -65,12 +67,15 @@ export default function App() {
       <Route element={<LayoutWithHeader />}>
         <Route index element={<Main />} />
         <Route path="login-required" element={<LoginRequiredPage />} />
-        {/* 필요시 더 추가 */}
+        <Route path="login" element={<Login />} />
+        <Route path="search" element={<Search />} />
+        <Route path="products" element={<ProductsPage />} />
+
       </Route>
 
       {/* 헤더가 없는 페이지들 */}
       <Route element={<LayoutWithoutHeader />}>
-        <Route path="login" element={<Login />} />
+       
       </Route>
 
       {/* 그 외 */}

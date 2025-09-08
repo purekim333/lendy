@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-import logo from "../assets/logo.png";
-import icHamburger from "../assets/header/hamburger.png";
-import icSearch from "../assets/header/search.png";
-import icUser from "../assets/header/mypage.png";
-import icCart from "../assets/header/cart.png"
+import logo from "../assets/logo.png";
+import icHamburger from "../assets/header/hamburger.png";
+import icSearch from "../assets/header/search.png";
+import icUser from "../assets/header/mypage.png";
+import icCart from "../assets/header/cart.png"
 
 
 export default function Header() {
@@ -39,7 +39,11 @@ export default function Header() {
       </Link>
 
       <div className="flex items-center gap-1.5">
-        <button aria-label="검색" className="p-1">
+        <button
+          aria-label="검색"
+          className="p-1"
+          onClick={() => nav("/search")}
+        >
           <img src={icSearch} alt="" className="h-5 w-5" />
         </button>
         <button aria-label="내 정보" className="p-1">

@@ -13,7 +13,10 @@ export default function LoginRequiredPage() {
           {/* 헤더 */}
           <div className="relative px-6 pt-7 pb-5">
             <h2 className="text-[20px] leading-tight font-semibold">
-              <span className="font-extrabold underline underline-offset-4">로그인</span>
+            <button 
+              onClick={()=> nav("/login")}
+              className="font-extrabold underline underline-offset-4 cursor-pointer hover:text-blue-700 active:scale-95 transition"
+              >로그인 </button>
               이 필요합니다.
             </h2>
 

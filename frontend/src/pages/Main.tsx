@@ -1,9 +1,12 @@
 import React from "react";
-import main1 from "../assets/main1.png"
-import main2 from "../assets/main2.png"
+import main1 from "../assets/main1.png"
+import main2 from "../assets/main2.png"
+import { useNavigate } from "react-router-dom";
 
 
 export default function Main() {
+  const nav = useNavigate();
+
   return (
 <div className="min-h-screen flex flex-col bg-white text-gray-800">
 
@@ -14,7 +17,9 @@ export default function Main() {
           alt="Cafe terrace"
           className="w-full h-[600px] object-cover"
         />
-        <button className="absolute bottom-14 left-1/2 -translate-x-1/2 bg-[#FFFDFA] text-black w-[220px] py-2 border font-serif">
+        <button 
+          onClick={()=> nav("/products")}
+          className="absolute bottom-14 left-1/2 -translate-x-1/2 bg-[#FFFDFA] text-black w-[220px] py-2 border font-serif">
           Shop More
         </button>
       </section>
