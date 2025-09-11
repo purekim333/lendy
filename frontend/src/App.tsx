@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import LoginRequiredPage from "./pages/LoginRequiredPage";
 import Search from "./pages/Search";
 import ProductsPage from "./pages/ProductsPage";
+import PaymentPage from "./pages/PaymentPage";
 
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -75,8 +76,11 @@ export default function App() {
 
       {/* 헤더가 없는 페이지들 */}
       <Route element={<LayoutWithoutHeader />}>
-       
+
       </Route>
+
+      {/* 얘는 어디 넣어야할지 몰라서 여기 넣어봤음 (결제관련)*/}
+      <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
 
       {/* 그 외 */}
       <Route element={<LayoutWithHeader />}>
