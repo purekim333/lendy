@@ -11,6 +11,16 @@ import ProductsPage from "./pages/ProductsPage";
 import PaymentPage from "./pages/PaymentPage";
 
 
+// --- Admin 전용 페이지들 ---
+import AdminLayout from "./pages/admin/layout/AdminLayout";
+import RequireAdmin from "./pages/admin/layout/RequireAdmin";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminProductsList from "./pages/admin/products/AdminProductsList";
+import AdminProductCreate from "./pages/admin/products/Create"; // (캔버스에 올려둔 컴포넌트)
+import AdminOrders from "./pages/admin/orders/AdminOrders";
+
+
+
 function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-sky-bg">
@@ -81,6 +91,22 @@ export default function App() {
 
       {/* 얘는 어디 넣어야할지 몰라서 여기 넣어봤음 (결제관련)*/}
       <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
+
+      {/* 관리자 영역 */}
+      <Route
+        path="/admin"
+        element={
+          <RequireAdmin>
+            <AdminLayout />
+          </RequireAdmin>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="products" element={<AdminProductsList />} />
+        <Route path="products/new" element={<AdminProductCreate />} />
+        <Route path="orders" element={<AdminOrders />} />
+        {/* 필요 시 추가: users, coupons, banners ... */}
+      </Route>
 
       {/* 그 외 */}
       <Route element={<LayoutWithHeader />}>
