@@ -10,7 +10,7 @@ import Search from "./pages/Search";
 import ProductsPage from "./pages/ProductsPage";
 import PaymentPage from "./pages/PaymentPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
-
+import CartPage from "./pages/CartPage";
 
 // --- Admin 전용 페이지들 ---
 import AdminLayout from "./pages/admin/layout/AdminLayout";
@@ -79,7 +79,7 @@ export default function App() {
         <Route path="search" element={<Search />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="/products/:productId" element={<ProductDetailPage />} />
-
+        <Route path="/cart" element={<CartPage />} />
       </Route>
 
       {/* 헤더가 없는 페이지들 */}
