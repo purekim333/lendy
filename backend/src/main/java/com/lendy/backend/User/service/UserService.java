@@ -139,9 +139,13 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
         if(registrationId.equals(SocialProviderType.NAVER.name())) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
+            System.out.println("userRequest = " + userRequest);
             username = registrationId + "-" + attributes.get("id");
+            System.out.println("userRequest = " + userRequest);
             email = attributes.get("email").toString();
+            System.out.println("userRequest = " + userRequest);
             nickname = attributes.get("nickname").toString();
+            System.out.println("userRequest = " + userRequest);
 
         } else if (registrationId.equals(SocialProviderType.GOOGLE.name())) {
 
@@ -156,8 +160,10 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
 
         Optional<UserEntity> entity = userRepository.findByUsernameAndIsSocial(username, true);
         if(entity.isPresent()) {
+            //role 조회
             role = entity.get().getRoleType().name();
 
+            // 기존 유저 업데이트
             UserRequestDTO dto = new UserRequestDTO();
             dto.setNickname(nickname);
             dto.setEmail(email);
@@ -165,6 +171,7 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
 
             userRepository.save(entity.get());
         } else {
+            // 신규 유저 추가
             UserEntity newUserEntity = UserEntity.builder()
                     .username(username)
                     .password("")
