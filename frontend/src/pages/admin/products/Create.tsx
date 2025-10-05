@@ -220,10 +220,10 @@ export default function AdminProductCreate() {
         <div className="lg:col-span-2 space-y-6">
           <Section title="기본 정보">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField label="상품명" value={title} onChange={setTitle} placeholder="예) 레트로 그래픽 반팔 티셔츠" required />
+              <TextField label="상품명" value={title} onChange={setTitle} placeholder="예) 레트로 그래픽 반팔 티셔츠 (Black)" required />
               <TextField label="브랜드" value={brand} onChange={setBrand} placeholder="예) SYND" />
-              <TextField label="카테고리" value={category} onChange={setCategory} placeholder="예) Top > T-Shirts" required />
-              <TextField label="태그(쉼표 구분)" value={tagsInput} onChange={setTagsInput} placeholder="예) tops, summer" />
+              <TextField label="타입" value={category} onChange={setCategory} placeholder="예) Top" required />
+              <TextField label="태그" value={tagsInput} onChange={setTagsInput} placeholder="예) summer" />
             </div>
           </Section>
 
@@ -268,7 +268,7 @@ export default function AdminProductCreate() {
 
           <Section title="옵션 → 변형(Variants)">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField label="색상 목록(쉼표)" value={colorsInput} onChange={setColorsInput} placeholder="예) White, Black" />
+              <TextField label="색상 목록" value={colorsInput} onChange={setColorsInput} placeholder="예) Black" />
               <TextField label="사이즈 목록(쉼표)" value={sizesInput} onChange={setSizesInput} placeholder="예) S, M, L" />
             </div>
             <div className="mt-3">
@@ -283,9 +283,7 @@ export default function AdminProductCreate() {
                       <th className="py-2 pr-4">색상</th>
                       <th className="py-2 pr-4">사이즈</th>
                       <th className="py-2 pr-4">SKU</th>
-                      <th className="py-2 pr-4">바코드(선택)</th>
                       <th className="py-2 pr-4">재고</th>
-                      <th className="py-2 pr-4">개별가(선택)</th>
                       <th className="py-2 pr-4 text-right">액션</th>
                     </tr>
                   </thead>
@@ -295,9 +293,7 @@ export default function AdminProductCreate() {
                         <td className="py-2 pr-4">{v.color}</td>
                         <td className="py-2 pr-4">{v.size}</td>
                         <td className="py-2 pr-4"><input className="w-40 input" value={v.sku} onChange={e=>setVariants(prev=>prev.map((x,i)=>i===idx?{...x, sku:e.target.value}:x))} /></td>
-                        <td className="py-2 pr-4"><input className="w-40 input" value={v.barcode ?? ""} onChange={e=>setVariants(prev=>prev.map((x,i)=>i===idx?{...x, barcode:e.target.value}:x))} /></td>
                         <td className="py-2 pr-4"><input type="number" className="w-24 input" min={0} value={v.stock} onChange={e=>setVariants(prev=>prev.map((x,i)=>i===idx?{...x, stock: toNum(e.target.value)}:x))} /></td>
-                        <td className="py-2 pr-4"><input type="number" className="w-28 input" min={0} placeholder="기본가 사용" value={v.priceOverride ?? ""} onChange={e=>setVariants(prev=>prev.map((x,i)=>i===idx?{...x, priceOverride: e.target.value===""? null : toNum(e.target.value)}:x))} /></td>
                         <td className="py-2 pr-4 text-right"><button className="px-2 py-1 text-xs border rounded-lg" onClick={()=>setVariants(prev=>prev.filter((_,i)=>i!==idx))}>삭제</button></td>
                       </tr>
                     ))}
