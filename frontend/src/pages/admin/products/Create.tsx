@@ -330,16 +330,7 @@ export default function AdminProductCreate() {
             </div>
           </Section>
 
-          <Section title="배송/치수">
-            <TextField label="배송비 템플릿 ID(선택)" value={shippingTemplateId} onChange={setShippingTemplateId} placeholder="예) basic-flat" />
-            <div className="grid grid-cols-2 gap-3 mt-3">
-              <NumberField label="무게(g)" value={weightGrams} onChange={v=>setWeightGrams(v===""?"":toNum(v))} min={0} />
-              <div />
-              <NumberField label="가로(mm)" value={widthMm} onChange={v=>setWidthMm(v===""?"":toNum(v))} min={0} />
-              <NumberField label="세로(mm)" value={heightMm} onChange={v=>setHeightMm(v===""?"":toNum(v))} min={0} />
-              <NumberField label="폭/두께(mm)" value={depthMm} onChange={v=>setDepthMm(v===""?"":toNum(v))} min={0} />
-            </div>
-          </Section>
+
 
           <Section title="SEO">
             <TextField label="SEO 제목" value={seoTitle} onChange={setSeoTitle} placeholder="검색 결과에 표시될 제목" />

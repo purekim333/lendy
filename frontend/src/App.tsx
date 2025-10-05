@@ -9,6 +9,7 @@ import LoginRequiredPage from "./pages/LoginRequiredPage";
 import Search from "./pages/Search";
 import ProductsPage from "./pages/ProductsPage";
 import PaymentPage from "./pages/PaymentPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 
 // --- Admin 전용 페이지들 ---
@@ -44,10 +45,6 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-
-
-
-
 /** 헤더가 포함된 레이아웃 */
 function LayoutWithHeader() {
   return (
@@ -81,6 +78,7 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="search" element={<Search />} />
         <Route path="products" element={<ProductsPage />} />
+        <Route path="/products/:productId" element={<ProductDetailPage />} />
 
       </Route>
 
