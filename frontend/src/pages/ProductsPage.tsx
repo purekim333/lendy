@@ -1,62 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import productban1 from "../assets/banner/productban1.png"
-
-// 샘플 데이터 타입
-type Product = {
-  id: string;
-  name: string;
-  price: number;       // 대여가
-  salePrice?: number;  // 판매가 (옵션)
-  img: string;
-  category: "ALL" | "Tops" | "Bottoms" | "Outers";
-  theme: "ALL" | "Daily" | "Work" | "Travel" | "Dating" | "Party";
-  createdAt: string;   // 정렬용
-};
-
-// 샘플 데이터 - 추루 API로 대체
-const SAMPLE: Product[] = [
-  {
-    id: "p1",
-    name: "썬 레트로 그래픽 반팔 티셔츠 아트 블루",
-    price: 18000,
-    salePrice: 112000,
-    img: "/assets/sample/p1.png", 
-    category: "Tops",
-    theme: "Daily",
-    createdAt: "2025-08-01",
-  },
-  {
-    id: "p2",
-    name: "세터데이 레트로 무드 그래픽 반팔 터데이 레트로 무드 그래픽 반팔",
-    price: 14000,
-    salePrice: 105000,
-    img: "/assets/sample/p2.png",
-    category: "Tops",
-    theme: "Travel",
-    createdAt: "2025-08-12",
-  },
-  {
-    id: "p3",
-    name: "썬 레트로 그래픽 반팔 티셔츠 아트 블루",
-    price: 18000,
-    salePrice: 112000,
-    img: "/assets/sample/p1.png", 
-    category: "Tops",
-    theme: "Daily",
-    createdAt: "2025-08-01",
-  },
-  {
-    id: "p4",
-    name: "세터데이 레트로 무드 그래픽 반팔",
-    price: 14000,
-    salePrice: 105000,
-    img: "/assets/sample/p2.png",
-    category: "Tops",
-    theme: "Travel",
-    createdAt: "2025-08-12",
-  },
-];
+import { Product } from "../types/Product";
+import { SAMPLE_PRODUCTS as SAMPLE } from "../data/Products";
 
 const CATS = ["ALL", "Tops", "Bottoms", "Outers"] as const;
 const THEMES = ["ALL", "Daily", "Work", "Travel", "Dating", "Party"] as const;
@@ -68,7 +14,7 @@ export default function ProductsPage() {
   const [sort, setSort] = useState<(typeof SORTS)[number]>("최신순");
 
   const filtered = useMemo(() => {
-    let list = SAMPLE.filter((p) =>
+    let list = [...SAMPLE].filter((p) =>
       (cat === "ALL" || p.category === cat) && 
       (theme === "ALL" || p.theme === theme)
     );
@@ -165,7 +111,7 @@ export default function ProductsPage() {
             <ul className="grid grid-cols-2 gap-4">
             {filtered.map((p) => (
                 <li key={p.id}>
-                <Link to={`/product/${p.id}`} className="group block">
+                <Link to={`/products/${p.id}`} className="group block">
                     <div className="relative">
                     <img
                         src={p.img}
@@ -188,11 +134,11 @@ export default function ProductsPage() {
                         {p.name}
                     </p>
                     <p className="mt-2">
-                        <span className="text-sm font-bold text-black">대여가 {fmt(p.price)}원</span>
+                        <span className="text-sm font-bold text-black">가격 {fmt(p.price)}원</span>
                     </p>
                     {p.salePrice && (
                         <p className="text-sm font-semibold text-gray-600">
-                        판매가 {fmt(p.salePrice)}원
+                        정가 {fmt(p.salePrice)}원
                         </p>
                     )}
                     </div>

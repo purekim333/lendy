@@ -9,6 +9,7 @@ import LoginRequiredPage from "./pages/LoginRequiredPage";
 import Search from "./pages/Search";
 import ProductsPage from "./pages/ProductsPage";
 import PaymentPage from "./pages/PaymentPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -33,10 +34,6 @@ function Shell({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-
-
-
 
 /** 헤더가 포함된 레이아웃 */
 function LayoutWithHeader() {
@@ -71,6 +68,7 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="search" element={<Search />} />
         <Route path="products" element={<ProductsPage />} />
+        <Route path="/products/:productId" element={<ProductDetailPage />} />
 
       </Route>
 
