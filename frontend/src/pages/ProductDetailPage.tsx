@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { SAMPLE_PRODUCTS } from "../data/Products";     
 import type { Product } from "../types/Product";       
+import { addToCart } from "../utils/cartStorage";
+import CartToast from "../components/CartToast";
 
 // 더미 리뷰 데이터
 type Review = {
@@ -26,6 +28,21 @@ const MOCK_REVIEWS: Review[] = [
 export default function ProductDetailPage() {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const [toastOpen, setToastOpen] = useState(false);
+
+  function handleAddToCart() {                          
+      if (!product) return;
+      addToCart({
+        productId: product.id,
+        name: product.name,
+        img: images[0] ?? product.img,
+        price: product.price,
+        size,
+        color,
+        qty,
+      });
+      setToastOpen(true);
+    }
 
   const product = useMemo<Product | undefined>(
     () => SAMPLE_PRODUCTS.find(p => p.id === productId),
@@ -199,14 +216,18 @@ export default function ProductDetailPage() {
 
               {/* 장바구니 & 구매 버튼 */}
               <div className="flex gap-3">
-                <button className="flex-1 rounded-2xl bg-gray-900 px-4 py-3 text-white">장바구니</button>
+                <button type="button"
+                  onClick={handleAddToCart}                               
+                  className="flex-1 rounded-2xl bg-gray-900 px-4 py-3 text-white">장바구니</button>
                 <button className="flex-1 rounded-2xl bg-emerald-300/90 px-4 py-3 text-gray-900">구매 신청</button>
               </div>
             </div>
           </section>
 
           {/* 장바구니 & 구매 버튼(하단 스티키 용도) */}
-          <div className="fixed inset-x-0 bottom-0 z-10 border-t border-gray-200 bg-white p-3 md:hidden">
+          <div
+            onClick={handleAddToCart}  
+            className="fixed inset-x-0 bottom-0 z-10 border-t border-gray-200 bg-white p-3 md:hidden">
             <div className="mx-auto flex max-w-[480px] gap-2">
               <button className="flex-1 rounded-2xl bg-gray-900 px-4 py-3 text-white">장바구니</button>
               <button className="flex-1 rounded-2xl bg-emerald-300/90 px-4 py-3 text-gray-900">구매 신청</button>
@@ -298,6 +319,14 @@ export default function ProductDetailPage() {
           </section>
         </>
       )}
+
+      {/* 장바구니 토스트 */}
+        <CartToast
+          open={toastOpen}
+          message="상품을 장바구니에 담았습니다."
+          onAction={() => navigate("/cart")}
+          onClose={() => setToastOpen(false)}
+        />
     </main>
   );
 }
