@@ -3,7 +3,7 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import Main from "./pages/Main";
 import NotFound from "./pages/NotFound";
 import Header from "./components/Header";
-import AsidePromotion from "./components/AsidePromotion";
+// import AsidePromotion from "./components/AsidePromotion";
 import Login from "./pages/Login";
 import LoginRequiredPage from "./pages/LoginRequiredPage";
 import Search from "./pages/Search";
@@ -22,21 +22,24 @@ import AdminOrders from "./pages/admin/orders/AdminOrders";
 
 
 
-function Shell({ children }: { children: React.ReactNode }) {
+function Shell({
+  children,
+  showAside = false, // ← 기본은 숨김
+}: {
+  children: React.ReactNode;
+  showAside?: boolean;
+}) {
   return (
-    <div className="min-h-screen bg-sky-bg">
-      <AsidePromotion />
+    <div className="min-h-screen bg-whit">
+      {/* {showAside && <AsidePromotion />} */}
 
-      {/* 오른쪽 컨텐츠 래퍼: 사이드바 폭만큼 여백 확보 */}
-      <div className="mx-auto w-full px-4 xl:pl-[460px]">
+      <div className={`mx-auto w-full px-4 ${showAside ? "xl:pl-[460px]" : ""}`}>
         <main
-          className="
-            w-[420px]
+          className={`
+            ${showAside ? "w-[420px]" : "w-full max-w-[480px]"}
             bg-white shadow-app xl:overflow-hidden
-            min-h-screen
-            flex flex-col
-            mx-auto
-          "
+            min-h-screen flex flex-col mx-auto
+          `}
         >
           {children}
         </main>
