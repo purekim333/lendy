@@ -139,13 +139,13 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
         if(registrationId.equals(SocialProviderType.NAVER.name())) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
-            System.out.println("userRequest = " + userRequest);
+            System.out.println("attributes = " + attributes);
             username = registrationId + "-" + attributes.get("id");
-            System.out.println("userRequest = " + userRequest);
+            System.out.println("username = " + username);
             email = attributes.get("email").toString();
-            System.out.println("userRequest = " + userRequest);
+            System.out.println("email = " + email);
             nickname = attributes.get("nickname").toString();
-            System.out.println("userRequest = " + userRequest);
+            System.out.println("nickname = " + nickname);
 
         } else if (registrationId.equals(SocialProviderType.GOOGLE.name())) {
 

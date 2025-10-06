@@ -5,7 +5,14 @@ import naverIcon from "../assets/login/naver.png";
 import appleIcon from "../assets/login/apple.png";
 import facebookIcon from "../assets/login/facebook.png";
 
+const BACKEND_API_BASE_URL = process.env.REACT_APP_BACKEND_API_BASE_URL
+
 export default function Login() {
+
+    const handleSocialLogin = (provider: String) => {
+        window.location.href = `${BACKEND_API_BASE_URL}/oauth2/authorization/${provider}`
+    };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6">
       {/* 로고 */}
@@ -22,14 +29,14 @@ export default function Login() {
       </button>
 
       {/* 구글 로그인 */}
-      <button className="w-full max-w-xs flex items-center justify-center gap-2 border rounded-md py-3 font-medium text-gray-700 mb-14">
+      <button onClick={() => handleSocialLogin("google")} className="w-full max-w-xs flex items-center justify-center gap-2 border rounded-md py-3 font-medium text-gray-700 mb-14">
         <img src={googleIcon} alt="Google" className="w-5 h-5" />
         Google로 시작하기
       </button>
 
       {/* 하단 아이콘 로그인 */}
       <div className="flex items-center gap-6 mb-20">
-        <button>
+        <button onClick={() => handleSocialLogin("naver")}>
           <img src={naverIcon} alt="Naver" className="w-10 h-10" />
         </button>
         <button>

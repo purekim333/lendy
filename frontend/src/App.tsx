@@ -5,10 +5,12 @@ import NotFound from "./pages/NotFound";
 import Header from "./components/Header";
 import AsidePromotion from "./components/AsidePromotion";
 import Login from "./pages/Login";
+import CookiePage from "./pages/CookiePage"
 import LoginRequiredPage from "./pages/LoginRequiredPage";
 import Search from "./pages/Search";
 import ProductsPage from "./pages/ProductsPage";
 import PaymentPage from "./pages/PaymentPage";
+import UserPage from "./pages/UserPage";
 
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -71,7 +73,8 @@ export default function App() {
         <Route path="login" element={<Login />} />
         <Route path="search" element={<Search />} />
         <Route path="products" element={<ProductsPage />} />
-
+        <Route path="/cookie" element={<CookiePage />} />
+        <Route path="/user" element={<UserPage />}/>
       </Route>
 
       {/* 헤더가 없는 페이지들 */}
