@@ -46,7 +46,7 @@ export default function Header() {
         >
           <img src={icSearch} alt="" className="h-5 w-5" />
         </button>
-        <button aria-label="내 정보" className="p-1">
+        <button aria-label="내 정보" className="p-1" onClick={() => nav("/user")}>
           <img src={icUser} alt="" className="h-5 w-5" />
         </button>
         <button aria-label="장바구니" className="relative p-1">
