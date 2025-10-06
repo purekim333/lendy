@@ -7,7 +7,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json
 # ↑ 보통 lock 파일은 커밋하는 편이 좋아요(빌드 재현성).
 #   팀 정책에 따라 주석 해제해서 추적하도록 하세요.
 
