@@ -139,13 +139,9 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
         if(registrationId.equals(SocialProviderType.NAVER.name())) {
 
             attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
-            System.out.println("attributes = " + attributes);
             username = registrationId + "-" + attributes.get("id");
-            System.out.println("username = " + username);
             email = attributes.get("email").toString();
-            System.out.println("email = " + email);
             nickname = attributes.get("nickname").toString();
-            System.out.println("nickname = " + nickname);
 
         } else if (registrationId.equals(SocialProviderType.GOOGLE.name())) {
 
@@ -153,6 +149,13 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
             username = registrationId + "-" + attributes.get("sub");
             email = attributes.get("email").toString();
             nickname = attributes.get("name").toString();
+
+        } else if (registrationId.equals(SocialProviderType.KAKAO.name())) {
+
+            attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
+            email = "카카오는 이메일 설정 필요";
+            username = registrationId + "-" + attributes.get("authId");
+            nickname = attributes.get("profile_nickname").toString();
 
         } else {
             throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인입니다.");
