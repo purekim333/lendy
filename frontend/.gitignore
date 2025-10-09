@@ -109,4 +109,11 @@ docker-data/
 android/
 ios/
 
-*~
+*~node_modules/
+dist/
+build/
+.env
+.env.*
+.DS_Store
+coverage/
+EOF
