@@ -23,7 +23,7 @@ export default function Login() {
       </p>
 
       {/* 카카오 로그인 */}
-      <button className="w-full max-w-xs flex items-center justify-center gap-2 bg-[#FEE500] rounded-md py-3 font-medium text-black mb-4">
+      <button onClick={() => handleSocialLogin("kakao")} className="w-full max-w-xs flex items-center justify-center gap-2 bg-[#FEE500] rounded-md py-3 font-medium text-black mb-4">
         <img src={kakaoIcon} alt="Kakao" className="w-5 h-5" />
         Kakao로 시작하기
       </button>
