@@ -1,0 +1,115 @@
+deploy/.env
+
+# -----------------------------
+# Node / Package Manager
+# -----------------------------
+**/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+# ↑ 보통 lock 파일은 커밋하는 편이 좋아요(빌드 재현성).
+#   팀 정책에 따라 주석 해제해서 추적하도록 하세요.
+
+# -----------------------------
+# Build outputs
+# -----------------------------
+dist/
+build/
+coverage/
+.storybook-out/
+storybook-static/
+
+# -----------------------------
+# Tool caches
+# -----------------------------
+.eslintcache
+.stylelintcache
+.turbo/
+.cache/
+.parcel-cache/
+.vite/                 # 일부 환경에서 생성될 수 있음
+.sass-cache/
+.swc/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# -----------------------------
+# Env files (비밀/토큰은 커밋 금지)
+# -----------------------------
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# 예시는 추적할 수 있게
+!.env.example
+
+# -----------------------------
+# IDE / Editor
+# -----------------------------
+.vscode/
+.idea/
+*.iml
+
+# -----------------------------
+# OS-specific
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Images / design tools (옵션)
+# -----------------------------
+*.sketch
+*.fig
+*.psd
+
+# -----------------------------
+# Storybook
+# -----------------------------
+**/.storybook/.cache/
+.storybook/generated-*
+.storybook/manager-cache/
+
+# -----------------------------
+# Test runners
+# -----------------------------
+jest-html-reporters-*
+test-results/
+playwright-report/
+playwright/.cache/
+
+# -----------------------------
+# Optional: Yarn Berry (v2+) 설정
+# -----------------------------
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# -----------------------------
+# Optional: Firebase / Emulators
+# -----------------------------
+.firebase/
+.firebaserc.local
+
+# -----------------------------
+# Optional: Docker / local compose
+# -----------------------------
+.docker/
+docker-data/
+
+# -----------------------------
+# Optional: Capacitor / Ionic (웹만 쓰면 제거)
+# -----------------------------
+android/
+ios/
+
+*~
