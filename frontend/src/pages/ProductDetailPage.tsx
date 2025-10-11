@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-
-export default function ProductDetailPage() {
-
-  return (
-    <div>상품디테일페이지</div>
-
-  );
-}
-=======
 // src/pages/ProductDetailPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -363,4 +353,3 @@ function Gauge({ label }: { label: string }) {
     </div>
   );
 }
->>>>>>> develop
