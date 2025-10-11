@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import productban1 from "../assets/banner/productban1.png"
+<<<<<<< HEAD
 
 // 샘플 데이터 타입
 type Product = {
@@ -57,6 +58,10 @@ const SAMPLE: Product[] = [
     createdAt: "2025-08-12",
   },
 ];
+=======
+import { Product } from "../types/Product";
+import { SAMPLE_PRODUCTS as SAMPLE } from "../data/Products";
+>>>>>>> develop
 
 const CATS = ["ALL", "Tops", "Bottoms", "Outers"] as const;
 const THEMES = ["ALL", "Daily", "Work", "Travel", "Dating", "Party"] as const;
@@ -68,7 +73,11 @@ export default function ProductsPage() {
   const [sort, setSort] = useState<(typeof SORTS)[number]>("최신순");
 
   const filtered = useMemo(() => {
+<<<<<<< HEAD
     let list = SAMPLE.filter((p) =>
+=======
+    let list = [...SAMPLE].filter((p) =>
+>>>>>>> develop
       (cat === "ALL" || p.category === cat) && 
       (theme === "ALL" || p.theme === theme)
     );
@@ -165,7 +174,11 @@ export default function ProductsPage() {
             <ul className="grid grid-cols-2 gap-4">
             {filtered.map((p) => (
                 <li key={p.id}>
+<<<<<<< HEAD
                 <Link to={`/product/${p.id}`} className="group block">
+=======
+                <Link to={`/products/${p.id}`} className="group block">
+>>>>>>> develop
                     <div className="relative">
                     <img
                         src={p.img}
@@ -188,11 +201,19 @@ export default function ProductsPage() {
                         {p.name}
                     </p>
                     <p className="mt-2">
+<<<<<<< HEAD
                         <span className="text-sm font-bold text-black">대여가 {fmt(p.price)}원</span>
                     </p>
                     {p.salePrice && (
                         <p className="text-sm font-semibold text-gray-600">
                         판매가 {fmt(p.salePrice)}원
+=======
+                        <span className="text-sm font-bold text-black">가격 {fmt(p.price)}원</span>
+                    </p>
+                    {p.salePrice && (
+                        <p className="text-sm font-semibold text-gray-600">
+                        정가 {fmt(p.salePrice)}원
+>>>>>>> develop
                         </p>
                     )}
                     </div>

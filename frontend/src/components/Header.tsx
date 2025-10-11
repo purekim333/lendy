@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
+=======
+import React, { useCallback, useState, useEffect } from "react";
+>>>>>>> develop
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import logo from "../assets/logo.png";
@@ -7,11 +11,53 @@ import icSearch from "../assets/header/search.png";
 import icUser from "../assets/header/mypage.png";
 import icCart from "../assets/header/cart.png"
 
+<<<<<<< HEAD
+=======
+import { CART_EVENT, getCartCount } from "../utils/cartStorage";
+>>>>>>> develop
 
 export default function Header() {
     const nav = useNavigate();
     const loc = useLocation();
   
+<<<<<<< HEAD
+=======
+    const [cartCount, setCartCount] = useState<number>(0);
+
+    const refreshCount = useCallback(() => {
+      setCartCount(getCartCount());
+    }, []);
+
+    useEffect(() => {
+      // 초기에 한 번
+      refreshCount();
+
+      // 같은 탭에서 장바구니가 바뀔 때(우리 커스텀 이벤트)
+      const onCustom = () => refreshCount();
+      window.addEventListener(CART_EVENT, onCustom);
+
+      // 다른 탭에서 localStorage가 바뀔 때
+      const onStorage = (e: StorageEvent) => {
+        if (e.key === "cart:v1") refreshCount();
+      };
+      window.addEventListener("storage", onStorage);
+
+      // 탭으로 돌아왔을 때 동기화
+      const onFocus = () => refreshCount();
+      window.addEventListener("focus", onFocus);
+
+      return () => {
+        window.removeEventListener(CART_EVENT, onCustom);
+        window.removeEventListener("storage", onStorage);
+        window.removeEventListener("focus", onFocus);
+      };
+    }, [refreshCount]);
+
+    useEffect(() => {
+      refreshCount();
+    }, [loc.pathname, refreshCount]);
+
+>>>>>>> develop
     const handleHamburger = () => {
         if (loc.pathname === "/login-required") {
           // 이미 로그인 필요 페이지면 → 뒤로가기
@@ -49,12 +95,23 @@ export default function Header() {
         <button aria-label="내 정보" className="p-1" onClick={() => nav("/user")}>
           <img src={icUser} alt="" className="h-5 w-5" />
         </button>
+<<<<<<< HEAD
         <button aria-label="장바구니" className="relative p-1">
           <img src={icCart} alt="" className="h-5 w-5" />
           <span className="absolute -right-0.5 -top-0.5 bg-blue-600 text-white text-[10px] leading-4 rounded-full w-4 h-4 text-center">
             0
           </span>
         </button>
+=======
+        <button onClick={() => nav("/cart")} aria-label="장바구니" className="relative p-1">
+            <img src={icCart} alt="" className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 bg-blue-600 text-white text-[10px] leading-4 rounded-full w-4 h-4 text-center">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </button>
+>>>>>>> develop
       </div>
     </header>
 

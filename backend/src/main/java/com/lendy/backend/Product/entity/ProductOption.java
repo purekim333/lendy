@@ -27,9 +27,15 @@ public class ProductOption {
     private Integer count;
 
     @Column(name = "buy_price", nullable = false)
+<<<<<<< HEAD
     private Float buyPrice;
 
     @Column(name = "rental_price", nullable = false)
     private Float rentalPrice;
+=======
+    private Integer buyPrice;
+
+    private Integer rentalPrice;
+>>>>>>> develop
 
 }

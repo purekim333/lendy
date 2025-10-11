@@ -5,6 +5,10 @@ import com.lendy.backend.Jwt.handler.RefreshTokenLogoutHandler;
 import com.lendy.backend.Jwt.service.JwtService;
 import com.lendy.backend.User.entity.UserRoleType;
 import com.lendy.backend.User.filter.LoginFilter;
+<<<<<<< HEAD
+=======
+import com.lendy.backend.User.service.UserService;
+>>>>>>> develop
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -38,17 +42,30 @@ public class SecurityConfig {
     private final AuthenticationSuccessHandler loginSuccessHandler;
     private final AuthenticationSuccessHandler socialSuccessHandler;
     private final JwtService jwtService;
+<<<<<<< HEAD
+=======
+    private final UserService userService;
+>>>>>>> develop
 
     public SecurityConfig(
             AuthenticationConfiguration authenticationConfiguration,
             @Qualifier("LoginSuccessHandler") AuthenticationSuccessHandler loginSuccessHandler,
             @Qualifier("SocialSuccessHandler") AuthenticationSuccessHandler socialSuccessHandler,
+<<<<<<< HEAD
             JwtService jwtService
+=======
+            JwtService jwtService,
+            UserService userService
+>>>>>>> develop
     ) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.loginSuccessHandler = loginSuccessHandler;
         this.socialSuccessHandler = socialSuccessHandler;
         this.jwtService = jwtService;
+<<<<<<< HEAD
+=======
+        this.userService = userService;
+>>>>>>> develop
     }
 
     @Bean
@@ -97,6 +114,10 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .oauth2Login(oauth2 -> oauth2
+<<<<<<< HEAD
+=======
+                        .userInfoEndpoint(userInfo -> userInfo.userService(userService))
+>>>>>>> develop
                         .successHandler(socialSuccessHandler))
 
                 .authorizeHttpRequests(auth -> auth

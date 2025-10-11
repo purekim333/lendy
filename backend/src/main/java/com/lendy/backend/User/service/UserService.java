@@ -152,12 +152,19 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
 
         } else if (registrationId.equals(SocialProviderType.KAKAO.name())) {
 
+<<<<<<< HEAD
             attributes= (Map<String, Object>) oAuth2User.getAttributes();
             email = "카카오는 이메일 설정 법인 계정 필요";
             username = registrationId + "-" + attributes.get("id");
             Object properties = attributes.get("properties");
             if (properties instanceof Map<?, ?> property) nickname = property.get("nickname").toString();
             else nickname = "임시";
+=======
+            attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
+            email = "카카오는 이메일 설정 필요";
+            username = registrationId + "-" + attributes.get("authId");
+            nickname = attributes.get("profile_nickname").toString();
+>>>>>>> develop
 
         } else {
             throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인입니다.");

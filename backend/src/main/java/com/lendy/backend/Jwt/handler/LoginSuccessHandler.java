@@ -41,6 +41,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String json = String.format("{\"accessToken\":\"%s\", \"refreshToken\":\"%s\"}", accessToken, refreshToken);
         response.getWriter().write(json);
         response.getWriter().flush();
+<<<<<<< HEAD
         response.sendRedirect("http://localhost:3000/cookie");
+=======
+        System.out.println("LoginSuccessHandler.onAuthenticationSuccess");
+        response.sendRedirect("http://localhost:3000/cookie");
+        System.out.println("request = " + request + ", response = " + response + ", authentication = " + authentication);
+>>>>>>> develop
     }
 }
