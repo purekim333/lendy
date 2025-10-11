@@ -5,7 +5,6 @@ import com.lendy.backend.Jwt.handler.RefreshTokenLogoutHandler;
 import com.lendy.backend.Jwt.service.JwtService;
 import com.lendy.backend.User.entity.UserRoleType;
 import com.lendy.backend.User.filter.LoginFilter;
-import com.lendy.backend.User.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -39,20 +38,8 @@ public class SecurityConfig {
     private final AuthenticationSuccessHandler loginSuccessHandler;
     private final AuthenticationSuccessHandler socialSuccessHandler;
     private final JwtService jwtService;
-    private final UserService userService;
-
-    public SecurityConfig(
-            AuthenticationConfiguration authenticationConfiguration,
-            @Qualifier("LoginSuccessHandler") AuthenticationSuccessHandler loginSuccessHandler,
             @Qualifier("SocialSuccessHandler") AuthenticationSuccessHandler socialSuccessHandler,
-            JwtService jwtService,
-            UserService userService
-    ) {
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.loginSuccessHandler = loginSuccessHandler;
-        this.socialSuccessHandler = socialSuccessHandler;
-        this.jwtService = jwtService;
-        this.userService = userService;
+            JwtService jwtService
     }
 
     @Bean
@@ -101,12 +88,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.userService(userService))
                         .successHandler(socialSuccessHandler))
-
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRoleType.USER.name())
                         .requestMatchers(HttpMethod.PUT, "/user").hasRole(UserRoleType.USER.name())
                         .requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRoleType.USER.name())

@@ -25,7 +25,11 @@
 }
 
 .App-link {
+<<<<<<< HEAD
+  color: #61dafb;
+=======
   color: #ffffff;
+>>>>>>> develop
 }
 
 @keyframes App-logo-spin {

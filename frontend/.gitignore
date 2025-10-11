@@ -109,6 +109,9 @@ docker-data/
 android/
 ios/
 
+<<<<<<< HEAD
+*~
+=======
 *~node_modules/
 dist/
 build/
@@ -117,3 +120,4 @@ build/
 .DS_Store
 coverage/
 EOF
+>>>>>>> develop

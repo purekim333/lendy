@@ -48,9 +48,6 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
 
-        System.out.println("LoginFilter.attemptAuthentication");
-        System.out.println("request = " + request + ", response = " + response);
-
         Map<String, String> loginMap;
 
         try {
@@ -59,13 +56,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
             loginMap = objectMapper.readValue(messageBody, new TypeReference<>() {
             });
-            System.out.println("messageBody = " + messageBody);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-
-        String username = loginMap.get(usernameParameter);
-        username = (username != null) ? username.trim() : "";
+            
         String password = loginMap.get(passwordParameter);
         password = (password != null) ? password : "";
 

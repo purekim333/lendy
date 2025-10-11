@@ -11,7 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PRODUCTIMAGE")
+@Table(name = "PRODUCT_IMAGE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -21,7 +21,7 @@ public class ProductImage {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_productimage_product"))
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_product_image_product"))
     private Product product;
 
     @Column(name = "is_main", nullable = false)
