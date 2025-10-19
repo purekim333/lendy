@@ -1,16 +1,12 @@
 package com.lendy.backend.Product.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "PRODUCT_OPTION")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class ProductOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +27,14 @@ public class ProductOption {
 
     @Column(name = "rental_price", nullable = false)
     private Float rentalPrice;
+
+    @Builder
+    private ProductOption(Product product, String size, Integer count, Float buyPrice, Float rentalPrice) {
+        this.product = product;
+        this.size = size;
+        this.count = count;
+        this.buyPrice = buyPrice;
+        this.rentalPrice = rentalPrice;
+    }
 
 }

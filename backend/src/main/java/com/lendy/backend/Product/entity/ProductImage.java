@@ -1,10 +1,7 @@
 package com.lendy.backend.Product.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +11,6 @@ import java.time.LocalDateTime;
 @Table(name = "PRODUCT_IMAGE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +23,7 @@ public class ProductImage {
     @Column(name = "is_main", nullable = false)
     private Boolean isMain;
 
-    @Column(name = "image_URL", nullable = false, length = 50)
+    @Column(name = "image_URL", nullable = false, length = 512)
     private String imageURL;
 
     @CreationTimestamp
@@ -37,5 +33,12 @@ public class ProductImage {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Builder
+    private ProductImage(Product product, Boolean isMain, String imageURL) {
+        this.product = product;
+        this.isMain = isMain;
+        this.imageURL = imageURL;
+    }
 }
 
