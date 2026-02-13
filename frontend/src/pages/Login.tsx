@@ -5,7 +5,7 @@ import naverIcon from "../assets/login/naver.png";
 import appleIcon from "../assets/login/apple.png";
 import facebookIcon from "../assets/login/facebook.png";
 
-const BACKEND_API_BASE_URL = process.env.REACT_APP_BACKEND_API_BASE_URL
+const BACKEND_API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL
 
 export default function Login() {
 

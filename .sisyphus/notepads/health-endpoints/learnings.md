@@ -1,0 +1,1 @@
+Health search results: No /health or actuator endpoints found in backend. Found endpoints in CartController, UserController, JwtController. No health-related mappings detected. Build.gradle lacks actuator dependency. Recommendation: add a minimal HealthController or enable Actuator.

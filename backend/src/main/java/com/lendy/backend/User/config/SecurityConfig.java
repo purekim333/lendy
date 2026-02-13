@@ -101,6 +101,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/health").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/orders/checkout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/payments/webhook/portone").permitAll()
                         .requestMatchers("/api/v1/admin/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRoleType.USER.name())
