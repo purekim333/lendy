@@ -5,7 +5,7 @@ import com.lendy.backend.Cart.dto.CartResponse;
 import com.lendy.backend.Cart.entity.Cart;
 import com.lendy.backend.Cart.repository.CartRepository;
 import com.lendy.backend.Product.entity.ProductOption;
-import com.lendy.backend.Product.repository.ProductOptionReposiotry;
+import com.lendy.backend.Product.repository.ProductOptionRepository;
 import com.lendy.backend.User.entity.UserEntity;
 import com.lendy.backend.User.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,7 +22,7 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
-    private final ProductOptionReposiotry productOptionReposiotry;
+    private final ProductOptionRepository productOptionRepository;
 
     @Transactional
     public Integer addToCart(String username, Integer productOptionId, int quantity){
@@ -32,7 +32,7 @@ public class CartService {
                 .orElseThrow(() -> new UsernameNotFoundException("회원등록된 사용자가 아닙니다"));
 
         // 상품이 없다면 취소
-        ProductOption option = productOptionReposiotry.findById(productOptionId)
+        ProductOption option = productOptionRepository.findById(productOptionId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 상품 옵션을 찾을 수 없습니다"));
 
         Cart.CartId id = new Cart.CartId(user.getId(), option.getId());
@@ -78,7 +78,7 @@ public class CartService {
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("회원등록된 사용자가 아닙니다"));
-        ProductOption option = productOptionReposiotry.findById(productOptionId)
+        ProductOption option = productOptionRepository.findById(productOptionId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 상품 옵션을 찾을 수 없습니다"));
 
         Cart.CartId id = new Cart.CartId(user.getId(), option.getId());
@@ -99,7 +99,7 @@ public class CartService {
     public Integer deleteItemFromMyCart(String username, Integer productOptionId) {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("회원등록된 사용자가 아닙니다"));
-        ProductOption option = productOptionReposiotry.findById(productOptionId)
+        ProductOption option = productOptionRepository.findById(productOptionId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 상품 옵션을 찾을 수 없습니다"));
 
         Cart.CartId id = new Cart.CartId(user.getId(), option.getId());

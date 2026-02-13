@@ -1,0 +1,108 @@
+package com.lendy.backend.Product.service;
+
+import com.lendy.backend.Product.controller.ProductAdminController;
+import com.lendy.backend.Product.dto.ProductCreateRequestDTO;
+import com.lendy.backend.Product.dto.ProductOptionRequestDTO;
+import com.lendy.backend.Product.dto.ProductResponseDTO;
+import com.lendy.backend.Product.entity.Product;
+import com.lendy.backend.Product.entity.ProductImage;
+import com.lendy.backend.Product.entity.ProductOption;
+import com.lendy.backend.Product.repository.ProductImageRepository;
+import com.lendy.backend.Product.repository.ProductOptionRepository;
+import com.lendy.backend.Product.repository.ProductRepository;
+import com.lendy.backend.common.service.S3StorageService;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class ProductAdminService {
+    private final S3StorageService s3StorageService;
+    private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ProductOptionRepository productOptionRepository;
+    public ProductAdminService (S3StorageService s3StorageService, ProductRepository productRepository,
+                                ProductImageRepository productImageRepository, ProductOptionRepository productOptionRepository) {
+        this.s3StorageService = s3StorageService;
+        this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
+        this.productOptionRepository = productOptionRepository;
+
+    }
+
+    @Transactional
+    public ProductResponseDTO createProduct(ProductCreateRequestDTO dto, List<MultipartFile> images) throws IllegalAccessException {
+        // s3 업로드
+        List<String> uploadURLs = new ArrayList<>();
+        try{
+            if (images != null && !images.isEmpty()) {
+                for (MultipartFile file : images) {
+                    String url = s3StorageService.uploadImage(file, "product");
+                    uploadURLs.add(url);
+                }
+            }
+
+            Product product = Product.builder()
+                    .productName(dto.getName())
+                    .type(dto.getType())
+                    .tag(dto.getTag())
+                    .color(dto.getColor())
+                    .description(dto.getDescription())
+                    .buyPrice(dto.getBuyPrice())
+                    .rentalPrice(dto.getRentalPrice())
+                    .thickness(dto.getThickness())
+                    .elasticity(dto.getElasticity())
+                    .lining(dto.getLining())
+                    .handFeel(dto.getHandFeel())
+                    .seeThrough(dto.getSeeThrough())
+                    // .isDeleted(false)   // 생략 가능 (기본값/PrePersist로 세팅)
+                    // .isPublished(true)  // 생략 가능
+                    .build();
+
+            Product save = productRepository.save(product);
+
+            // 이미지 저장
+            int imageCnt = uploadURLs.size();
+            for (int i = 0; i < imageCnt; i++) {
+                ProductImage productImage;
+                // 첫번째 사진이면
+                if (i == 0) {
+                    productImage = ProductImage.builder()
+                            .product(save)
+                            .isMain(true)
+                            .imageURL(uploadURLs.get(i))
+                            .build();
+                } else {
+                    productImage = ProductImage.builder()
+                            .product(save)
+                            .isMain(false)
+                            .imageURL(uploadURLs.get(i))
+                            .build();
+                }
+                productImageRepository.save(productImage);
+            }
+
+            // 상품 옵션 저장
+            if (dto.getOptions() != null && !dto.getOptions().isEmpty()) {
+                for (ProductOptionRequestDTO optionDto : dto.getOptions()) {
+                    ProductOption productOption = ProductOption.builder()
+                            .product(save)
+                            .size(optionDto.getSize())
+                            .count(optionDto.getCount())
+                            .buyPrice(optionDto.getBuyPrice())
+                            .rentalPrice((optionDto.getRentalPrice()))
+                            .build();
+                    productOptionRepository.save(productOption);
+                }
+            }
+            return ProductResponseDTO.of(save, uploadURLs.get(0));
+
+        } catch (Exception e){
+            throw new IllegalAccessException("상품 등록 중 오류가 발생했습니다.");
+        }
+    }
+
+}
