@@ -33,4 +33,20 @@ public interface CartRepository extends JpaRepository<Cart, Cart.CartId> {
 
     // 유저별 전체 삭제 (하드 삭제)
     long deleteAllByUserEntity_Id(Long userId);
+
+
+    @Query("""
+        select c from Cart c
+        join fetch c.productOption po
+        where c.userEntity.id = :userId and c.isDeleted = false
+    """)
+    List<Cart> findByUserEntityId(@Param("userId") Long userId);
+
+    @Query("""
+        select c from Cart c
+        join fetch c.productOption po
+        where c.userEntity.id = :userId and c.isDeleted = false and po.id in :optionIds
+    """)
+    List<Cart> findByUserEntityIdAndOptionIds(@Param("userId") Long userId,
+                                              @Param("optionIds") List<Integer> optionIds);
 }
