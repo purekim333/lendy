@@ -1,0 +1,40 @@
+Guest Checkout Implementation Completed
+=======================================
+
+Files Created:
+1. backend/src/main/java/com/lendy/backend/orders/entity/OrderStatus.java
+   - Enum: PAYMENT_PENDING, PAID, READY, SHIPPING, DELIVERED, CANCELLED
+
+2. backend/src/main/java/com/lendy/backend/orders/entity/Order.java
+   - Order entity with guest buyer fields, shipping address, pricing snapshot
+   - orderCode (unique), orderAccessKeyHash, merchantUid
+   - Relationships with OrderItem
+
+3. backend/src/main/java/com/lendy/backend/orders/entity/OrderItem.java
+   - Order item with product snapshot (name, option, pricing)
+
+4. backend/src/main/java/com/lendy/backend/orders/dto/CheckoutRequest.java
+   - DTO for checkout: items, shipping info, guest info
+
+5. backend/src/main/java/com/lendy/backend/orders/dto/CheckoutResponse.java
+   - DTO with orderCode, orderAccessKey, merchantUid, amounts, status
+
+6. backend/src/main/java/com/lendy/backend/orders/repository/OrderRepository.java
+   - JPA repository for Order entity
+
+7. backend/src/main/java/com/lendy/backend/orders/service/OrderService.java
+   - checkout() method: validates items, computes totals, creates Order
+   - Generates merchantUid, orderCode, accessKey
+   - Server-side amount computation (no FE trust)
+
+8. backend/src/main/java/com/lendy/backend/orders/controller/OrderController.java
+   - POST /api/v1/orders/checkout endpoint
+   - Public access (permitAll)
+
+9. backend/src/main/resources/db/migration/V4__orders.sql
+   - ORDERS and ORDER_ITEM table definitions
+
+10. backend/src/test/resources/application.properties
+    - H2 test database configuration
+
+Build Status: ./gradlew compileJava - SUCCESS
