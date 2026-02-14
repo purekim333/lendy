@@ -13,6 +13,7 @@ import PaymentPage from "./pages/PaymentPage";
 import UserPage from "./pages/UserPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
+import OrderLookupPage from "./pages/OrderLookupPage";
 
 // --- Admin 전용 페이지들 ---
 import AdminLayout from "./pages/admin/layout/AdminLayout";
@@ -87,6 +88,7 @@ export default function App() {
         <Route path="/user" element={<UserPage />}/>
         <Route path="/products/:productId" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="order-lookup" element={<OrderLookupPage />} />
       </Route>
 
       {/* 헤더가 없는 페이지들 */}

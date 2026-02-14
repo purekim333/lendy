@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,6 @@ public interface ProductOptionRepository extends JpaRepository<ProductOption, In
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from ProductOption p where p.id = :id")
     Optional<ProductOption> findByIdForUpdate(@Param("id") Integer id);
+
+    List<ProductOption> findByProductId(Integer productId);
 }

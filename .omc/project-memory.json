@@ -1,0 +1,420 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1771002938575,
+  "projectRoot": "D:\\dev\\haveAMood",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "docs"
+    ],
+    "gitBranches": {
+      "defaultBranch": "develop",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "backend": {
+      "path": "backend",
+      "purpose": null,
+      "fileCount": 8,
+      "lastAccessed": 1771002938501,
+      "keyFiles": [
+        "AGENTS.md",
+        "build.gradle",
+        "Dockerfile",
+        "gradlew",
+        "gradlew.bat"
+      ]
+    },
+    "deploy": {
+      "path": "deploy",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1771002938501,
+      "keyFiles": [
+        "AGENTS.md",
+        "docker-compose.yml"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 0,
+      "lastAccessed": 1771002938502,
+      "keyFiles": []
+    },
+    "frontend": {
+      "path": "frontend",
+      "purpose": null,
+      "fileCount": 11,
+      "lastAccessed": 1771002938503,
+      "keyFiles": [
+        "AGENTS.md",
+        "index.html",
+        "package.json",
+        "postcss.config.js",
+        "README.md"
+      ]
+    },
+    "backend\\build": {
+      "path": "backend\\build",
+      "purpose": "Build output",
+      "fileCount": 0,
+      "lastAccessed": 1771002938504,
+      "keyFiles": []
+    },
+    "frontend\\node_modules": {
+      "path": "frontend\\node_modules",
+      "purpose": "Dependencies",
+      "fileCount": 0,
+      "lastAccessed": 1771002938505,
+      "keyFiles": []
+    },
+    "frontend\\public": {
+      "path": "frontend\\public",
+      "purpose": "Public files",
+      "fileCount": 6,
+      "lastAccessed": 1771002938505,
+      "keyFiles": [
+        "favicon.ico",
+        "index.html",
+        "logo192.png"
+      ]
+    },
+    "frontend\\src": {
+      "path": "frontend\\src",
+      "purpose": "Source code",
+      "fileCount": 8,
+      "lastAccessed": 1771002938510,
+      "keyFiles": [
+        "App.css",
+        "App.tsx",
+        "index.css"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "",
+      "accessCount": 28,
+      "lastAccessed": 1771050235591,
+      "type": "directory"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\service\\OrderService.java",
+      "accessCount": 10,
+      "lastAccessed": 1771045853958,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\User\\config\\SecurityConfig.java",
+      "accessCount": 10,
+      "lastAccessed": 1771045877205,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\controller\\OrderController.java",
+      "accessCount": 6,
+      "lastAccessed": 1771045857250,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java",
+      "accessCount": 5,
+      "lastAccessed": 1771046788192,
+      "type": "directory"
+    },
+    {
+      "path": "backend\\src\\test\\resources\\application.properties",
+      "accessCount": 5,
+      "lastAccessed": 1771046890123,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\entity\\Order.java",
+      "accessCount": 4,
+      "lastAccessed": 1771045803129,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\service\\ProductService.java",
+      "accessCount": 4,
+      "lastAccessed": 1771045882736,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\controller\\ProductController.java",
+      "accessCount": 4,
+      "lastAccessed": 1771045883367,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\src\\App.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1771045953357,
+      "type": "file"
+    },
+    {
+      "path": "C:\\Users\\Kim\\.claude\\settings.json",
+      "accessCount": 3,
+      "lastAccessed": 1771003585248,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\repository\\ProductOptionRepository.java",
+      "accessCount": 3,
+      "lastAccessed": 1771045789738,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\repository\\OrderRepository.java",
+      "accessCount": 3,
+      "lastAccessed": 1771045819187,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\entity\\PaymentAttempt.java",
+      "accessCount": 3,
+      "lastAccessed": 1771045819659,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\client\\PortOneClient.java",
+      "accessCount": 3,
+      "lastAccessed": 1771045828207,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\service\\PaymentService.java",
+      "accessCount": 3,
+      "lastAccessed": 1771045837724,
+      "type": "file"
+    },
+    {
+      "path": "C:\\Users\\Kim\\.claude\\CLAUDE.md",
+      "accessCount": 2,
+      "lastAccessed": 1771003826071,
+      "type": "file"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 2,
+      "lastAccessed": 1771045013626,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\entity\\Product.java",
+      "accessCount": 2,
+      "lastAccessed": 1771045754680,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\entity\\ProductOption.java",
+      "accessCount": 2,
+      "lastAccessed": 1771045755289,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\dto\\ProductResponseDTO.java",
+      "accessCount": 2,
+      "lastAccessed": 1771045762289,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\repository\\ProductRepository.java",
+      "accessCount": 2,
+      "lastAccessed": 1771045785007,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\entity\\PaymentStatus.java",
+      "accessCount": 2,
+      "lastAccessed": 1771045813819,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\src\\util\\fetchUtil.ts",
+      "accessCount": 2,
+      "lastAccessed": 1771045908264,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\tailwind.config.js",
+      "accessCount": 2,
+      "lastAccessed": 1771050271043,
+      "type": "file"
+    },
+    {
+      "path": "C:\\Users\\Kim\\.claude\\hud\\omc-hud.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1771003269509,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\package.json",
+      "accessCount": 1,
+      "lastAccessed": 1771044928791,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\resources\\application.properties",
+      "accessCount": 1,
+      "lastAccessed": 1771044935246,
+      "type": "file"
+    },
+    {
+      "path": "deploy\\docker-compose.yml",
+      "accessCount": 1,
+      "lastAccessed": 1771044941469,
+      "type": "file"
+    },
+    {
+      "path": "frontend\\vite.config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1771044953164,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\boulder.json",
+      "accessCount": 1,
+      "lastAccessed": 1771045241903,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\plans\\payment-webhook-core-restructure.md",
+      "accessCount": 1,
+      "lastAccessed": 1771045243160,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\notepads\\payment-webhook-core-restructure\\decisions.md",
+      "accessCount": 1,
+      "lastAccessed": 1771045243193,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\notepads\\payment-webhook-core-restructure\\issues.md",
+      "accessCount": 1,
+      "lastAccessed": 1771045243730,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\notepads\\payment-webhook-core-restructure\\problems.md",
+      "accessCount": 1,
+      "lastAccessed": 1771045244291,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\notepads\\payment-webhook-core-restructure\\learnings.md",
+      "accessCount": 1,
+      "lastAccessed": 1771045244680,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\evidence\\task-2-health.json",
+      "accessCount": 1,
+      "lastAccessed": 1771045253760,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\evidence\\task-3-vite-migration.txt",
+      "accessCount": 1,
+      "lastAccessed": 1771045254636,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\evidence\\task-4-flyway-startup.txt",
+      "accessCount": 1,
+      "lastAccessed": 1771045254666,
+      "type": "file"
+    },
+    {
+      "path": ".sisyphus\\evidence\\task-5-checkout.txt",
+      "accessCount": 1,
+      "lastAccessed": 1771045254976,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Payment\\entity\\Payment.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045287706,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\entity\\PaymentEventLog.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045306513,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\controller\\PaymentController.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045307853,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Order\\controller\\OrderController.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045507405,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\resources\\db\\migration\\V5__payments.sql",
+      "accessCount": 1,
+      "lastAccessed": 1771045692658,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\dto\\CheckoutRequest.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045709535,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\dto\\CheckoutResponse.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045710110,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\controller\\ProductAdminController.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045711247,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\payments\\repository\\PaymentAttemptRepository.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045712465,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\entity\\ProductImage.java",
+      "accessCount": 1,
+      "lastAccessed": 1771045755957,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

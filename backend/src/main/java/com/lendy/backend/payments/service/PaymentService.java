@@ -122,6 +122,36 @@ public class PaymentService {
         finalizePayment(merchantUid, impUid, "VERIFY_API");
     }
 
+    @Transactional
+    public void cancelPayment(String merchantUid, String reason) {
+        log.info("Cancelling payment: merchantUid={}, reason={}", merchantUid, reason);
+
+        PaymentAttempt payment = paymentAttemptRepository.findByMerchantUid(merchantUid)
+                .orElseThrow(() -> new IllegalArgumentException("Payment attempt not found: " + merchantUid));
+
+        // Idempotency check - already cancelled
+        if (payment.getStatus() == PaymentStatus.CANCELLED) {
+            log.info("Payment already cancelled: merchantUid={}", merchantUid);
+            return;
+        }
+
+        // If payment is PAID, call PortOne to cancel/refund
+        if (payment.isPaid()) {
+            boolean success = portOneClient.cancelPayment(payment.getImpUid(), reason);
+            if (!success) {
+                logCancelEvent(payment, "PORTONE_CANCEL_FAILED", "Failed to cancel payment via PortOne");
+                throw new IllegalStateException("Failed to cancel payment with PortOne");
+            }
+        }
+
+        // Update payment status
+        payment.markAsCancelled();
+        paymentAttemptRepository.save(payment);
+
+        logCancelEvent(payment, "SUCCESS", null);
+        log.info("Payment cancelled successfully: merchantUid={}", merchantUid);
+    }
+
     private void logEvent(PaymentAttempt payment, String impUid, String source, Integer amount, String result, String error) {
         PaymentEventLog eventLog = PaymentEventLog.builder()
                 .merchantUid(payment.getMerchantUid())
@@ -129,6 +159,19 @@ public class PaymentService {
                 .eventType("FINALIZE")
                 .source(source)
                 .amount(amount)
+                .processingResult(result)
+                .errorMessage(error)
+                .build();
+        paymentEventLogRepository.save(eventLog);
+    }
+
+    private void logCancelEvent(PaymentAttempt payment, String result, String error) {
+        PaymentEventLog eventLog = PaymentEventLog.builder()
+                .merchantUid(payment.getMerchantUid())
+                .impUid(payment.getImpUid())
+                .eventType("CANCEL")
+                .source("ORDER_CANCEL")
+                .amount(payment.getAmount())
                 .processingResult(result)
                 .errorMessage(error)
                 .build();

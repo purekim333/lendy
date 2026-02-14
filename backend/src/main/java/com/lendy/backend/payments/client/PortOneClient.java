@@ -68,6 +68,44 @@ public class PortOneClient {
         return null;
     }
 
+    public boolean cancelPayment(String impUid, String reason) {
+        if (apiKey == null || apiSecret == null) {
+            log.warn("PortOne API credentials not configured");
+            return false;
+        }
+
+        try {
+            String accessToken = getAccessToken();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", accessToken);
+
+            Map<String, String> requestBody = Map.of(
+                    "imp_uid", impUid,
+                    "reason", reason != null ? reason : "Guest cancellation"
+            );
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(requestBody, headers);
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    BASE_URL + "/payments/cancel",
+                    entity,
+                    Map.class
+            );
+
+            Map<String, Object> body = response.getBody();
+            if (body != null && (Integer) body.get("code") == 0) {
+                log.info("Payment cancelled successfully: impUid={}", impUid);
+                return true;
+            } else {
+                log.error("Failed to cancel payment: impUid={}, response={}", impUid, body);
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Failed to cancel payment via PortOne: impUid={}", impUid, e);
+            return false;
+        }
+    }
+
     private String getAccessToken() {
         Map<String, String> request = Map.of(
                 "imp_key", apiKey,

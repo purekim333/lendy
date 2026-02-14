@@ -4,7 +4,18 @@ declare global {
   }
 }
 
-export const requestPayment = (orderName: string, amount: number) => {
+export interface BuyerInfo {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export const requestPayment = (
+  merchantUid: string,
+  amount: number,
+  orderName: string,
+  buyer: BuyerInfo
+) => {
   return new Promise((resolve, reject) => {
     const { IMP } = window;
     if (!IMP) return reject("포트원 SDK 로드 실패");
@@ -15,12 +26,12 @@ export const requestPayment = (orderName: string, amount: number) => {
       {
         pg: "html5_inicis",
         pay_method: "card",
-        merchant_uid: `mid_${new Date().getTime()}`,
+        merchant_uid: merchantUid,
         name: orderName,
         amount: amount,
-        buyer_email: "tmdduf785@naver.com",
-        buyer_name: "오승열",
-        buyer_tel: "010-3762-9160",
+        buyer_email: buyer.email,
+        buyer_name: buyer.name,
+        buyer_tel: buyer.phone,
       },
       (rsp: any) => {
         if (rsp.success) {

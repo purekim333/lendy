@@ -112,4 +112,8 @@ public class PaymentAttempt {
     public boolean isPaid() {
         return this.status == PaymentStatus.PAID;
     }
+
+    public void markAsCancelled() {
+        this.status = PaymentStatus.CANCELLED;
+    }
 }

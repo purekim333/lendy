@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchWithAccess } from "../../../util/fetchUtil";
 
 /** ----- 타입/라벨 (쇼핑몰용) ----- */
 type OrderStatus = "PAYMENT_PENDING" | "PAID" | "READY" | "SHIPPING" | "DELIVERED" | "CANCELLED";
@@ -39,71 +40,35 @@ type OrderRow = {
   invoiceNo?: string;
 };
 
-/** ----- 예시 데이터: 정다인 주문에 2개 상품 라인 ----- */
-const MOCK: OrderRow[] = [
-  {
-    orderId: "LND-202510-0001",
-    lineId: "LND-202510-0001-01",
-    userName: "정다인",
-    productName: "SYND 데몬 덕다운 경량 후드 패딩",
-    variant: "Light Blue / FREE",
-    qty: 1,
-    unitPrice: 24000,
-    amount: 24000,
-    createdAt: "2025-10-03T10:11:00+09:00",
-    status: "READY",
-  },
-  {
-    orderId: "LND-202510-0001",
-    lineId: "LND-202510-0001-02",
-    userName: "정다인",
-    productName: "러플 스커트",
-    variant: "Ivory / S",
-    qty: 2,
-    unitPrice: 18000,
-    amount: 36000,
-    createdAt: "2025-10-03T10:11:00+09:00",
-    status: "READY",
-  },
-  {
-    orderId: "LND-202510-0003",
-    lineId: "LND-202510-0003-01",
-    userName: "박예진",
-    productName: "니트 가디건",
-    variant: "Black / Free",
-    qty: 1,
-    unitPrice: 26000,
-    amount: 26000,
-    createdAt: "2025-10-01T12:05:00+09:00",
-    status: "PAID",
-  },
-  {
-    orderId: "LND-202509-0099",
-    lineId: "LND-202509-0099-01",
-    userName: "홍길동",
-    productName: "새틴 블라우스",
-    variant: "Pink / M",
-    qty: 1,
-    unitPrice: 18000,
-    amount: 18000,
-    createdAt: "2025-09-28T09:10:00+09:00",
-    status: "SHIPPING",
-    carrier: "우체국",
-    invoiceNo: "1234567890",
-  },
-  {
-    orderId: "LND-202509-0098",
-    lineId: "LND-202509-0098-01",
-    userName: "이서연",
-    productName: "플로럴 원피스",
-    variant: "Green / S",
-    qty: 1,
-    unitPrice: 24000,
-    amount: 24000,
-    createdAt: "2025-09-20T14:22:00+09:00",
-    status: "DELIVERED",
-  },
-];
+/** Backend API response types */
+type OrderItem = {
+  productName: string;
+  optionDescription: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+};
+
+type BackendOrder = {
+  id: number;
+  orderCode: string;
+  buyerName: string;
+  buyerPhone: string;
+  status: OrderStatus;
+  totalAmount: number;
+  createdAt: string;
+  carrier: string | null;
+  invoiceNo: string | null;
+  items: OrderItem[];
+};
+
+type PageResponse = {
+  content: BackendOrder[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+};
 
 /** ----- 유틸 ----- */
 type SortKey = keyof Pick<OrderRow, "orderId" | "lineId" | "userName" | "productName" | "createdAt" | "amount" | "status">;
@@ -118,7 +83,9 @@ const formatDate = (iso: string) => {
 /** ===== 메인 컴포넌트 ===== */
 export default function AdminOrders() {
   // 데이터는 편집 반영을 위해 state에 저장
-  const [data, setData] = useState<OrderRow[]>(MOCK);
+  const [data, setData] = useState<OrderRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // 검색/정렬/페이지
   const [query, setQuery] = useState("");
@@ -134,6 +101,52 @@ export default function AdminOrders() {
   const [editingLineId, setEditingLineId] = useState<string | null>(null);
   const [editCarrier, setEditCarrier] = useState<Carrier>("우체국");
   const [editInvoice, setEditInvoice] = useState("");
+
+  // Fetch orders from backend
+  const fetchOrders = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const baseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL || "http://localhost:8080";
+      const url = `${baseUrl}/api/v1/admin/orders?page=0&size=1000&sort=createdAt,desc`;
+
+      const response = await fetchWithAccess(url);
+      const pageData: PageResponse = await response.json();
+
+      // Map backend orders to OrderRow format
+      const rows: OrderRow[] = [];
+      pageData.content.forEach((order) => {
+        order.items.forEach((item, index) => {
+          rows.push({
+            orderId: order.orderCode,
+            lineId: `${order.orderCode}-${index + 1}`,
+            userName: order.buyerName,
+            productName: item.productName,
+            variant: item.optionDescription,
+            qty: item.quantity,
+            unitPrice: item.unitPrice,
+            amount: item.totalPrice,
+            createdAt: order.createdAt,
+            status: order.status,
+            carrier: order.carrier as Carrier | undefined,
+            invoiceNo: order.invoiceNo ?? undefined,
+          });
+        });
+      });
+
+      setData(rows);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch orders");
+      console.error("Failed to fetch orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch on mount and when filters change
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   // 필터/정렬
   const filtered = useMemo(() => {
@@ -174,17 +187,35 @@ export default function AdminOrders() {
   const changeSort = (key: SortKey) => sortKey === key ? setSortDir(d => d === "asc" ? "desc" : "asc") : (setSortKey(key), setSortDir("asc"));
 
   // 일괄 처리(참고: 송장은 행별 입력이므로 bulk에 포함하지 않음)
-  const bulk = (action: "markPaid" | "markReady" | "markDelivered" | "cancel") => {
+  const bulk = async (action: "markPaid" | "markReady" | "markDelivered" | "cancel") => {
     if (!selected.size) return alert("선택된 접수건이 없습니다.");
-    const ids = new Set(selected);
-    setData(prev => prev.map(r => {
-      if (!ids.has(r.lineId)) return r;
-      if (action === "markPaid") return { ...r, status: "PAID" };
-      if (action === "markReady") return { ...r, status: "READY" };
-      if (action === "markDelivered") return { ...r, status: "DELIVERED" };
-      return { ...r, status: "CANCELLED" };
-    }));
-    setSelected(new Set());
+
+    const baseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL || "http://localhost:8080";
+    const selectedRows = data.filter(r => selected.has(r.lineId));
+    const orderCodes = new Set(selectedRows.map(r => r.orderId));
+
+    try {
+      setLoading(true);
+
+      for (const orderCode of orderCodes) {
+        let endpoint = "";
+        if (action === "markReady") endpoint = `/api/v1/admin/orders/${orderCode}/ready`;
+        else if (action === "markDelivered") endpoint = `/api/v1/admin/orders/${orderCode}/deliver`;
+        else if (action === "cancel") endpoint = `/api/v1/admin/orders/${orderCode}/cancel`;
+        else continue; // markPaid not implemented in backend yet
+
+        if (endpoint) {
+          await fetchWithAccess(`${baseUrl}${endpoint}`, { method: "POST" });
+        }
+      }
+
+      setSelected(new Set());
+      await fetchOrders(); // Refetch after bulk action
+    } catch (err) {
+      alert(`일괄 처리 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 송장 인라인 편집
@@ -194,12 +225,35 @@ export default function AdminOrders() {
     setEditInvoice(row.invoiceNo ?? "");
   };
   const cancelInvoiceEdit = () => { setEditingLineId(null); setEditInvoice(""); };
-  const saveInvoice = () => {
+  const saveInvoice = async () => {
     if (!editingLineId) return;
     if (!editInvoice.trim()) return alert("송장번호를 입력하세요.");
-    setData(prev => prev.map(r => r.lineId === editingLineId ? { ...r, carrier: editCarrier, invoiceNo: editInvoice, status: "SHIPPING" } : r));
-    setEditingLineId(null);
-    setEditInvoice("");
+
+    const row = data.find(r => r.lineId === editingLineId);
+    if (!row) return;
+
+    const baseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL || "http://localhost:8080";
+
+    try {
+      setLoading(true);
+
+      await fetchWithAccess(`${baseUrl}/api/v1/admin/orders/${row.orderId}/ship`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          carrier: editCarrier,
+          invoiceNo: editInvoice,
+        }),
+      });
+
+      setEditingLineId(null);
+      setEditInvoice("");
+      await fetchOrders(); // Refetch after invoice save
+    } catch (err) {
+      alert(`송장 등록 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 우측: 주문량 Top10 (최근 N일)
@@ -218,6 +272,18 @@ export default function AdminOrders() {
         <h2 className="text-xl font-semibold">주문 관리</h2>
         <Link to="/admin" className="text-sm underline underline-offset-4 hover:opacity-80">대시보드</Link>
       </div>
+
+      {/* Loading/Error States */}
+      {loading && (
+        <div className="border rounded-2xl bg-white p-6 text-center text-gray-500">
+          주문 데이터를 불러오는 중...
+        </div>
+      )}
+      {error && (
+        <div className="border rounded-2xl bg-rose-50 border-rose-200 p-6 text-center text-rose-700">
+          오류: {error}
+        </div>
+      )}
 
       {/* 상단 필터 */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-3">
