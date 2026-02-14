@@ -15,3 +15,17 @@
 - Implemented Order domain with guest checkout support.
 - Server computes all amounts; no frontend price trust.
 - Guest access uses orderCode + orderAccessKey (hashed in DB).
+
+## 2026-02-14T14:07:18+09:00
+- Payments domain with idempotent finalize using @Version optimistic locking.
+- Webhook endpoint is public but should verify signature (TODO).
+- Both webhook and verify API converge to same finalizePayment() method.
+
+## 2026-02-14T14:12:58+09:00
+- Guest order lookup requires orderCode + accessKey (SHA-256 hashed).
+- Invalid access key returns 401-equivalent error (IllegalArgumentException).
+
+## 2026-02-14T14:16:51+09:00
+- Admin endpoints require ADMIN role (no longer permitAll).
+- Status transitions are validated (cannot skip steps).
+- Cancel blocked after SHIPPING status.

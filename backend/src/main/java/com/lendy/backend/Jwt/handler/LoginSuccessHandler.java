@@ -1,7 +1,7 @@
-package com.lendy.backend.Jwt.handler;
+package com.lendy.backend.jwt.handler;
 
-import com.lendy.backend.Jwt.service.JwtService;
-import com.lendy.backend.Jwt.util.JWTUtil;
+import com.lendy.backend.jwt.service.JwtService;
+import com.lendy.backend.jwt.util.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +41,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String json = String.format("{\"accessToken\":\"%s\", \"refreshToken\":\"%s\"}", accessToken, refreshToken);
         response.getWriter().write(json);
         response.getWriter().flush();
-        response.sendRedirect("http://localhost:3000/cookie");
+        response.sendRedirect("http://localhost:5173/cookie");
     }
 }

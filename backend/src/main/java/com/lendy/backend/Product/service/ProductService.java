@@ -1,4 +1,4 @@
-package com.lendy.backend.Product.service;
+package com.lendy.backend.product.service;
 
 public class ProductService {
 }

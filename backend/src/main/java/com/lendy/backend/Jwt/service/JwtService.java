@@ -1,10 +1,10 @@
-package com.lendy.backend.Jwt.service;
+package com.lendy.backend.jwt.service;
 
-import com.lendy.backend.Jwt.dto.JWTResponseDTO;
-import com.lendy.backend.Jwt.dto.RefreshRequestDTO;
-import com.lendy.backend.Jwt.entity.RefreshEntity;
-import com.lendy.backend.Jwt.repository.RefreshRepository;
-import com.lendy.backend.Jwt.util.JWTUtil;
+import com.lendy.backend.jwt.dto.JWTResponseDTO;
+import com.lendy.backend.jwt.dto.RefreshRequestDTO;
+import com.lendy.backend.jwt.entity.RefreshEntity;
+import com.lendy.backend.jwt.repository.RefreshRepository;
+import com.lendy.backend.jwt.util.JWTUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

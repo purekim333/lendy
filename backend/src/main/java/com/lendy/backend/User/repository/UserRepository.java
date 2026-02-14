@@ -1,6 +1,6 @@
-package com.lendy.backend.User.repository;
+package com.lendy.backend.user.repository;
 
-import com.lendy.backend.User.entity.UserEntity;
+import com.lendy.backend.user.entity.UserEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

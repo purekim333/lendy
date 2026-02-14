@@ -1,4 +1,4 @@
-package com.lendy.backend.Jwt.dto;
+package com.lendy.backend.jwt.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

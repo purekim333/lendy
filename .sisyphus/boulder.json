@@ -1,9 +1,11 @@
 {
-  "active_plan": "F:\\HaveAMood\\.sisyphus\\plans\\payment-webhook-core-restructure.md",
-  "started_at": "2026-02-13T14:54:34.507Z",
+  "active_plan": "F:\\HaveAMood\\.sisyphus\\plans\\optimize-subagent-models.md",
+  "started_at": "2026-02-14T07:15:09.056Z",
   "session_ids": [
-    "ses_3a880e2ecffepXkuUqOQzK278e"
+    "ses_3a508865effefrK2Yqu2outUuW",
+    "ses_3a4e229afffez0dfSo0Mbfk1wb",
+    "ses_3a3d4f3d0ffeGYfRELui1P6NDs"
   ],
-  "plan_name": "payment-webhook-core-restructure",
+  "plan_name": "optimize-subagent-models",
   "agent": "atlas"
 }

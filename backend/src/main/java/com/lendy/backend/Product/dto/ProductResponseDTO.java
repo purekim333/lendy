@@ -1,6 +1,6 @@
-package com.lendy.backend.Product.dto;
+package com.lendy.backend.product.dto;
 
-import com.lendy.backend.Product.entity.Product;
+import com.lendy.backend.product.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

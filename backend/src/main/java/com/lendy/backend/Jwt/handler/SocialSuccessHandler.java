@@ -1,7 +1,7 @@
-package com.lendy.backend.Jwt.handler;
+package com.lendy.backend.jwt.handler;
 
-import com.lendy.backend.Jwt.service.JwtService;
-import com.lendy.backend.Jwt.util.JWTUtil;
+import com.lendy.backend.jwt.service.JwtService;
+import com.lendy.backend.jwt.util.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ public class SocialSuccessHandler implements AuthenticationSuccessHandler {
         refreshCookie.setMaxAge(10); // 10초 (프론트에서 발급 후 바로 헤더 전환 로직 진행 예정)
 
         response.addCookie(refreshCookie);
-        response.sendRedirect("http://localhost:3000/cookie");
+        response.sendRedirect("http://localhost:5173/cookie");
     }
 
 }

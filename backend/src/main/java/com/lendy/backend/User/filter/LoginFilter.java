@@ -1,4 +1,4 @@
-package com.lendy.backend.User.filter;
+package com.lendy.backend.user.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

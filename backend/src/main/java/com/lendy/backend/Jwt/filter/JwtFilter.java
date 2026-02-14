@@ -1,6 +1,6 @@
-package com.lendy.backend.Jwt.filter;
+package com.lendy.backend.jwt.filter;
 
-import com.lendy.backend.Jwt.util.JWTUtil;
+import com.lendy.backend.jwt.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

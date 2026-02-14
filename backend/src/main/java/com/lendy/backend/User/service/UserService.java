@@ -1,13 +1,13 @@
-package com.lendy.backend.User.service;
+package com.lendy.backend.user.service;
 
-import com.lendy.backend.Jwt.service.JwtService;
-import com.lendy.backend.User.dto.CustomOAuth2User;
-import com.lendy.backend.User.dto.UserRequestDTO;
-import com.lendy.backend.User.dto.UserResponseDTO;
-import com.lendy.backend.User.entity.SocialProviderType;
-import com.lendy.backend.User.entity.UserEntity;
-import com.lendy.backend.User.entity.UserRoleType;
-import com.lendy.backend.User.repository.UserRepository;
+import com.lendy.backend.jwt.service.JwtService;
+import com.lendy.backend.user.dto.CustomOAuth2User;
+import com.lendy.backend.user.dto.UserRequestDTO;
+import com.lendy.backend.user.dto.UserResponseDTO;
+import com.lendy.backend.user.entity.SocialProviderType;
+import com.lendy.backend.user.entity.UserEntity;
+import com.lendy.backend.user.entity.UserRoleType;
+import com.lendy.backend.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

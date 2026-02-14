@@ -1,4 +1,4 @@
-package com.lendy.backend.Product.dto;
+package com.lendy.backend.product.dto;
 
 import lombok.Getter;
 import lombok.Setter;

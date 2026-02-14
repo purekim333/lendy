@@ -1,9 +1,9 @@
-package com.lendy.backend.Product.controller;
+package com.lendy.backend.product.controller;
 
-import com.lendy.backend.Product.dto.ProductCreateRequestDTO;
-import com.lendy.backend.Product.dto.ProductResponseDTO;
-import com.lendy.backend.Product.service.ProductAdminService;
-import com.lendy.backend.Product.service.ProductService;
+import com.lendy.backend.product.dto.ProductCreateRequestDTO;
+import com.lendy.backend.product.dto.ProductResponseDTO;
+import com.lendy.backend.product.service.ProductAdminService;
+import com.lendy.backend.product.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

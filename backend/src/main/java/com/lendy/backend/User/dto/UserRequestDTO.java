@@ -1,4 +1,4 @@
-package com.lendy.backend.User.dto;
+package com.lendy.backend.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,0 +1,51 @@
+Payments Domain + Webhook Implementation Completed
+====================================================
+
+Files Created:
+1. backend/src/main/java/com/lendy/backend/payments/entity/PaymentStatus.java
+   - Enum: CREATED, REQUESTED, PAID, FAILED, CANCELLED, REFUNDED
+
+2. backend/src/main/java/com/lendy/backend/payments/entity/PaymentAttempt.java
+   - Payment entity with merchantUid (unique), impUid (unique)
+   - Order reference, amount, status
+   - Optimistic locking (@Version) for idempotency
+   - Terminal state checking methods
+
+3. backend/src/main/java/com/lendy/backend/payments/entity/PaymentEventLog.java
+   - Event logging for audit trail
+   - Redacts sensitive data (buyer info)
+
+4. backend/src/main/java/com/lendy/backend/payments/repository/PaymentAttemptRepository.java
+5. backend/src/main/java/com/lendy/backend/payments/repository/PaymentEventLogRepository.java
+
+6. backend/src/main/java/com/lendy/backend/payments/client/PortOneClient.java
+   - PortOne API integration
+   - Token acquisition
+   - Payment lookup by imp_uid
+
+7. backend/src/main/java/com/lendy/backend/payments/service/PaymentService.java
+   - Idempotent finalizePayment() method
+   - Strict verification: merchantUid match, amount match, status PAID
+   - Handles webhook and verify API
+   - Updates Order status to PAID on success
+   - Comprehensive logging
+
+8. backend/src/main/java/com/lendy/backend/payments/controller/PaymentController.java
+   - POST /api/v1/payments/verify - verify payment endpoint
+   - POST /api/v1/payments/webhook/portone - webhook receiver (public)
+
+9. backend/src/main/resources/db/migration/V5__payments.sql
+   - PAYMENT_ATTEMPT and PAYMENT_EVENT_LOG tables
+
+10. Updated SecurityConfig.java
+    - Added permitAll for webhook endpoint
+
+Key Features:
+- Idempotent finalization with optimistic locking
+- Webhook and verify both converge to same PAID outcome
+- Server-to-server verification with PortOne
+- Amount/merchantUid strict validation
+- Comprehensive event logging
+- Order status updated on payment success
+
+Build Status: ./gradlew compileJava - SUCCESS

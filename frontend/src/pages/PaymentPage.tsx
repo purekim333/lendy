@@ -7,7 +7,7 @@ const PaymentPage: React.FC = () => {
       const rsp: any = await requestPayment("원피스", 1000);
 
       // 결제 성공 시 imp_uid, merchant_uid를 백엔드로 전달
-      const res = await fetch("/api/payments/verify", {
+      const res = await fetch("http://localhost:8080/api/v1/payments/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

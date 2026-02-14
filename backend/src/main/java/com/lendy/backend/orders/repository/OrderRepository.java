@@ -1,6 +1,9 @@
 package com.lendy.backend.orders.repository;
 
 import com.lendy.backend.orders.entity.Order;
+import com.lendy.backend.orders.entity.OrderStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +17,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     boolean existsByOrderCode(String orderCode);
 
     Optional<Order> findByMerchantUid(String merchantUid);
+
+    Page<Order> findByStatus(OrderStatus status, Pageable pageable);
 }

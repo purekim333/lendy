@@ -4,7 +4,7 @@ import { fetchWithAccess } from "../util/fetchUtil";
 import main1 from "../assets/main1.png"; // 배너 톤 맞추기 위해 재사용
 // 필요 시 위 이미지를 다른 것으로 교체 가능
 
-const BACKEND_API_BASE_URL = process.env.REACT_APP_BACKEND_API_BASE_URL ?? "";
+const BACKEND_API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL ?? "";
 
 type UserInfo = {
   username: string;

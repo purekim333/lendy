@@ -1,4 +1,4 @@
-package com.lendy.backend.Product.entity;
+package com.lendy.backend.product.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

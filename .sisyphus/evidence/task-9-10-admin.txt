@@ -1,0 +1,37 @@
+Guest Order Lookup + Admin Fulfillment Completed
+=================================================
+
+Guest Order Lookup (Task 9):
+- GET /api/v1/orders/guest/{orderCode}?accessKey={key}
+- Requires valid access key (SHA-256 hash verification)
+- Returns order details, status, items, tracking info
+
+Files Created:
+1. backend/src/main/java/com/lendy/backend/orders/dto/GuestOrderResponse.java
+2. Updated OrderService.java - getGuestOrder() method
+3. Updated OrderController.java - guest lookup endpoint
+4. Updated SecurityConfig.java - public access to guest endpoint
+
+Admin Fulfillment (Task 10):
+- GET /api/v1/admin/orders - List orders (with pagination, status filter)
+- GET /api/v1/admin/orders/{orderCode} - Get order details
+- POST /api/v1/admin/orders/{orderCode}/ready - Mark as READY
+- POST /api/v1/admin/orders/{orderCode}/shipping - Mark as SHIPPING (with tracking)
+- POST /api/v1/admin/orders/{orderCode}/delivered - Mark as DELIVERED
+- POST /api/v1/admin/orders/{orderCode}/cancel - Cancel order
+
+Files Created:
+1. backend/src/main/java/com/lendy/backend/orders/controller/AdminOrderController.java
+2. backend/src/main/java/com/lendy/backend/orders/service/AdminOrderService.java
+3. backend/src/main/java/com/lendy/backend/orders/dto/OrderAdminResponse.java
+4. backend/src/main/java/com/lendy/backend/orders/dto/UpdateTrackingRequest.java
+5. Updated OrderRepository.java - findByStatus() method
+6. Updated SecurityConfig.java - ADMIN role required for admin endpoints
+
+Features:
+- Status transition validation (PAYMENT_PENDING -> PAID -> READY -> SHIPPING -> DELIVERED)
+- Cancel only allowed before SHIPPING
+- Tracking info (carrier, invoiceNo) on shipping
+- Admin endpoints protected with ADMIN role
+
+Build Status: ./gradlew compileJava - SUCCESS

@@ -1,4 +1,4 @@
-package com.lendy.backend.User.config;
+package com.lendy.backend.user.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

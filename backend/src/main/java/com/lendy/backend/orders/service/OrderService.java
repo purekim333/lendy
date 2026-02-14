@@ -2,13 +2,14 @@ package com.lendy.backend.orders.service;
 
 import com.lendy.backend.orders.dto.CheckoutRequest;
 import com.lendy.backend.orders.dto.CheckoutResponse;
+import com.lendy.backend.orders.dto.GuestOrderResponse;
 import com.lendy.backend.orders.entity.Order;
 import com.lendy.backend.orders.entity.OrderItem;
 import com.lendy.backend.orders.entity.OrderStatus;
 import com.lendy.backend.orders.repository.OrderRepository;
 import com.lendy.backend.payments.service.PaymentService;
-import com.lendy.backend.Product.entity.ProductOption;
-import com.lendy.backend.Product.repository.ProductOptionReposiotry;
+import com.lendy.backend.product.entity.ProductOption;
+import com.lendy.backend.product.repository.ProductOptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductOptionReposiotry productOptionRepository;
+    private final ProductOptionRepository productOptionRepository;
     private final PaymentService paymentService;
 
     private static final int FREE_SHIPPING_THRESHOLD = 50000;
@@ -127,5 +128,43 @@ public class OrderService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Failed to hash access key", e);
         }
+    }
+
+    public GuestOrderResponse getGuestOrder(String orderCode, String accessKey) {
+        Order order = orderRepository.findByOrderCode(orderCode)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        // Verify access key
+        String hashedKey = hashAccessKey(accessKey);
+        if (!order.getOrderAccessKeyHash().equals(hashedKey)) {
+            throw new IllegalArgumentException("Invalid access key");
+        }
+
+        return GuestOrderResponse.builder()
+                .orderCode(order.getOrderCode())
+                .status(order.getStatus().name())
+                .subtotalAmount(order.getSubtotalAmount())
+                .shippingFee(order.getShippingFee())
+                .totalAmount(order.getTotalAmount())
+                .createdAt(order.getCreatedAt())
+                .receiverName(order.getReceiverName())
+                .receiverPhone(order.getReceiverPhone())
+                .address1(order.getAddress1())
+                .address2(order.getAddress2())
+                .zipCode(order.getZipCode())
+                .deliveryMessage(order.getDeliveryMessage())
+                .carrier(order.getCarrier())
+                .invoiceNo(order.getInvoiceNo())
+                .items(order.getItems().stream()
+                        .map(item -> GuestOrderResponse.GuestOrderItemResponse.builder()
+                                .productName(item.getProductName())
+                                .optionDescription(item.getOptionDescription())
+                                .quantity(item.getQuantity())
+                                .unitPrice(item.getUnitPrice())
+                                .totalPrice(item.getTotalPrice())
+                                .imageUrl(item.getImageUrl())
+                                .build())
+                        .toList())
+                .build();
     }
 }

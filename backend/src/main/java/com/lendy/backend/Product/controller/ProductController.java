@@ -1,7 +1,6 @@
-package com.lendy.backend.Product.controller;
+package com.lendy.backend.product.controller;
 
-import com.lendy.backend.Product.service.ProductService;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.lendy.backend.product.service.ProductService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

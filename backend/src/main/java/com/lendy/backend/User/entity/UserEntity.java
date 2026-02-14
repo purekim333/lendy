@@ -1,6 +1,6 @@
-package com.lendy.backend.User.entity;
+package com.lendy.backend.user.entity;
 
-import com.lendy.backend.User.dto.UserRequestDTO;
+import com.lendy.backend.user.dto.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "USER")
+@Table(name = "USER_ENTITY")
 @Getter
 @Builder
 @NoArgsConstructor
