@@ -1,6 +1,6 @@
-package com.lendy.backend.Jwt.repository;
+package com.lendy.backend.jwt.repository;
 
-import com.lendy.backend.Jwt.entity.RefreshEntity;
+import com.lendy.backend.jwt.entity.RefreshEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

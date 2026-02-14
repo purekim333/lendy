@@ -1,10 +1,10 @@
-package com.lendy.backend.User.config;
+package com.lendy.backend.user.config;
 
-import com.lendy.backend.Jwt.filter.JwtFilter;
-import com.lendy.backend.Jwt.handler.RefreshTokenLogoutHandler;
-import com.lendy.backend.Jwt.service.JwtService;
-import com.lendy.backend.User.entity.UserRoleType;
-import com.lendy.backend.User.filter.LoginFilter;
+import com.lendy.backend.jwt.filter.JwtFilter;
+import com.lendy.backend.jwt.handler.RefreshTokenLogoutHandler;
+import com.lendy.backend.jwt.service.JwtService;
+import com.lendy.backend.user.entity.UserRoleType;
+import com.lendy.backend.user.filter.LoginFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -107,7 +107,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/orders/guest/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/orders/guest/*/cancel").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/payments/webhook/portone").permitAll()
-                        .requestMatchers("/api/v1/admin/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/orders/guest/*").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRoleType.USER.name())
                         .requestMatchers(HttpMethod.PUT, "/user").hasRole(UserRoleType.USER.name())

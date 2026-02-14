@@ -1,15 +1,14 @@
-package com.lendy.backend.Product.service;
+package com.lendy.backend.product.service;
 
-import com.lendy.backend.Product.controller.ProductAdminController;
-import com.lendy.backend.Product.dto.ProductCreateRequestDTO;
-import com.lendy.backend.Product.dto.ProductOptionRequestDTO;
-import com.lendy.backend.Product.dto.ProductResponseDTO;
-import com.lendy.backend.Product.entity.Product;
-import com.lendy.backend.Product.entity.ProductImage;
-import com.lendy.backend.Product.entity.ProductOption;
-import com.lendy.backend.Product.repository.ProductImageRepository;
-import com.lendy.backend.Product.repository.ProductOptionRepository;
-import com.lendy.backend.Product.repository.ProductRepository;
+import com.lendy.backend.product.dto.ProductCreateRequestDTO;
+import com.lendy.backend.product.dto.ProductOptionRequestDTO;
+import com.lendy.backend.product.dto.ProductResponseDTO;
+import com.lendy.backend.product.entity.Product;
+import com.lendy.backend.product.entity.ProductImage;
+import com.lendy.backend.product.entity.ProductOption;
+import com.lendy.backend.product.repository.ProductImageRepository;
+import com.lendy.backend.product.repository.ProductOptionRepository;
+import com.lendy.backend.product.repository.ProductRepository;
 import com.lendy.backend.common.service.S3StorageService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

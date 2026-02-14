@@ -1,4 +1,4 @@
-package com.lendy.backend.Cart.dto;
+package com.lendy.backend.cart.dto;
 
 public record CartItemDto (
         String imageURL,

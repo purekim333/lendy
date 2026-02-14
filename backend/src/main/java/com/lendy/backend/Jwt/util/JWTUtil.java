@@ -1,4 +1,4 @@
-package com.lendy.backend.Jwt.util;
+package com.lendy.backend.jwt.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

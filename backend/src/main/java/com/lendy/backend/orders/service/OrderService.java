@@ -8,8 +8,8 @@ import com.lendy.backend.orders.entity.OrderItem;
 import com.lendy.backend.orders.entity.OrderStatus;
 import com.lendy.backend.orders.repository.OrderRepository;
 import com.lendy.backend.payments.service.PaymentService;
-import com.lendy.backend.Product.entity.ProductOption;
-import com.lendy.backend.Product.repository.ProductOptionRepository;
+import com.lendy.backend.product.entity.ProductOption;
+import com.lendy.backend.product.repository.ProductOptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -147,14 +147,17 @@ public class OrderService {
                 .status(order.getStatus().name())
                 .buyerName(order.getBuyerName())
                 .buyerPhone(order.getBuyerPhone())
+                .subtotalAmount(order.getSubtotalAmount())
+                .shippingFee(order.getShippingFee())
+                .totalAmount(order.getTotalAmount())
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
                 .receiverName(order.getReceiverName())
                 .receiverPhone(order.getReceiverPhone())
                 .address1(order.getAddress1())
                 .address2(order.getAddress2())
                 .zipCode(order.getZipCode())
-                .subtotalAmount(order.getSubtotalAmount())
-                .shippingFee(order.getShippingFee())
-                .totalAmount(order.getTotalAmount())
+                .deliveryMessage(order.getDeliveryMessage())
                 .carrier(order.getCarrier())
                 .invoiceNo(order.getInvoiceNo())
                 .items(order.getItems().stream()
@@ -164,10 +167,9 @@ public class OrderService {
                                 .quantity(item.getQuantity())
                                 .unitPrice(item.getUnitPrice())
                                 .totalPrice(item.getTotalPrice())
+                                .imageUrl(item.getImageUrl())
                                 .build())
                         .collect(Collectors.toList()))
-                .createdAt(order.getCreatedAt())
-                .updatedAt(order.getUpdatedAt())
                 .build();
     }
 

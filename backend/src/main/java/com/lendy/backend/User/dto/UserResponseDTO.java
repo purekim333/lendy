@@ -1,4 +1,4 @@
-package com.lendy.backend.User.dto;
+package com.lendy.backend.user.dto;
 
 public record UserResponseDTO(
         String username,

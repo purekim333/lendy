@@ -8,47 +8,37 @@ import java.util.List;
 
 @Getter
 @Builder
-public class GuestOrderResponse {
+public class OrderAdminResponse {
 
+    private Long id;
     private String orderCode;
     private String status;
-
-    // Buyer info
-    private String buyerName;
-    private String buyerPhone;
-
-    // Pricing
-    private Integer subtotalAmount;
-    private Integer shippingFee;
     private Integer totalAmount;
-
-    // Timestamps
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Receiver/shipping info
+    private String buyerName;
+    private String buyerPhone;
     private String receiverName;
     private String receiverPhone;
     private String address1;
     private String address2;
     private String zipCode;
-    private String deliveryMessage;
 
-    // Tracking
     private String carrier;
     private String invoiceNo;
 
-    // Items
-    private List<OrderItemInfo> items;
+    private String merchantUid;
+
+    private List<OrderItemResponse> items;
 
     @Getter
     @Builder
-    public static class OrderItemInfo {
+    public static class OrderItemResponse {
         private String productName;
         private String optionDescription;
         private Integer quantity;
         private Integer unitPrice;
         private Integer totalPrice;
-        private String imageUrl;
     }
 }

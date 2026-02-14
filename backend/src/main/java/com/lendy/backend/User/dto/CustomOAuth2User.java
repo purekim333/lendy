@@ -1,4 +1,4 @@
-package com.lendy.backend.User.dto;
+package com.lendy.backend.user.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;

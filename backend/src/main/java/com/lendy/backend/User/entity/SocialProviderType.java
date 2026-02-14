@@ -1,4 +1,4 @@
-package com.lendy.backend.User.entity;
+package com.lendy.backend.user.entity;
 
 import lombok.Getter;
 

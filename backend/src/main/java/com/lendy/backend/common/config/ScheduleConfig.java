@@ -1,6 +1,6 @@
 package com.lendy.backend.common.config;
 
-import com.lendy.backend.Jwt.repository.RefreshRepository;
+import com.lendy.backend.jwt.repository.RefreshRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

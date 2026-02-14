@@ -1,4 +1,4 @@
-package com.lendy.backend.Jwt.entity;
+package com.lendy.backend.jwt.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

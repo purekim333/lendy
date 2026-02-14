@@ -3,6 +3,7 @@ package com.lendy.backend.orders.controller;
 import com.lendy.backend.orders.dto.AdminOrderResponse;
 import com.lendy.backend.orders.dto.ShipRequest;
 import com.lendy.backend.orders.entity.Order;
+import com.lendy.backend.orders.entity.OrderStatus;
 import com.lendy.backend.orders.service.AdminOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,10 @@ public class AdminOrderController {
 
     @GetMapping
     public ResponseEntity<Page<AdminOrderResponse>> listOrders(
+            @RequestParam(required = false) OrderStatus status,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<Order> orders = adminOrderService.listOrders(pageable);
+        Page<Order> orders = adminOrderService.listOrders(status, pageable);
         Page<AdminOrderResponse> response = orders.map(AdminOrderResponse::from);
         return ResponseEntity.ok(response);
     }

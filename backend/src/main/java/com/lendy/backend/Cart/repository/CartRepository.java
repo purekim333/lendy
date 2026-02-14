@@ -1,18 +1,20 @@
-package com.lendy.backend.Cart.repository;
+package com.lendy.backend.cart.repository;
 
-import com.lendy.backend.Cart.dto.CartItemDto;
-import com.lendy.backend.Cart.entity.Cart;
+import com.lendy.backend.cart.dto.CartItemDto;
+import com.lendy.backend.cart.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CartRepository extends JpaRepository<Cart, Cart.CartId> {
 
     // 장바구니 화면 DTO 한 방 조회 (구매가 기준; 대여가면 rental_price로 바꾸세요)
     @Query("""
-      select new com.lendy.backend.Cart.dto.CartItemDto(
+      select new com.lendy.backend.cart.dto.CartItemDto(
         pi.imageURL,
         p.productName,
         p.color,
@@ -24,12 +26,12 @@ public interface CartRepository extends JpaRepository<Cart, Cart.CartId> {
       from Cart c
       join c.productOption po
       join po.product p
-      left join com.lendy.backend.Product.entity.ProductImage pi
+      left join com.lendy.backend.product.entity.ProductImage pi
              on pi.product = p and pi.isMain = true
       where c.userEntity.id = :userId
         and c.isDeleted = false
     """)
-    List<CartItemDto> findCartItems(@Param("userId") Long userId);
+    List<CartItemDto> findCartItems(@Param("userId") Long id);
 
     // 유저별 전체 삭제 (하드 삭제)
     long deleteAllByUserEntity_Id(Long userId);

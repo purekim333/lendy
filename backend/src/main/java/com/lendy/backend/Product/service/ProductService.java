@@ -1,4 +1,4 @@
-package com.lendy.backend.Product.service;
+package com.lendy.backend.product.service;
 
 import com.lendy.backend.Product.dto.ProductDetailResponseDTO;
 import com.lendy.backend.Product.dto.ProductResponseDTO;

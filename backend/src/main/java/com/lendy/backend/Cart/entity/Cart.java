@@ -1,15 +1,25 @@
-package com.lendy.backend.Cart.entity;
+package com.lendy.backend.cart.entity;
 
-import com.lendy.backend.Product.entity.ProductOption;
-import com.lendy.backend.User.entity.UserEntity;
-import jakarta.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import com.lendy.backend.product.entity.ProductOption;
+import com.lendy.backend.user.entity.UserEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Table( name = "CART",
@@ -25,12 +35,10 @@ public class Cart {
     private CartId id;
 
     @ManyToOne
-    @MapsId("userEntityId")
-    @JoinColumn(name = "user_entity_id", foreignKey = @ForeignKey(name = "fk_cart_user_entity"))
+    @JoinColumn(name = "user_entity_id", foreignKey = @ForeignKey(name = "fk_cart_users"))
     private UserEntity userEntity;
 
     @ManyToOne
-    @MapsId("productOptionId")
     @JoinColumn(name = "product_option_id", foreignKey = @ForeignKey(name = "fk_cart_product_option"))
     private ProductOption productOption;
 

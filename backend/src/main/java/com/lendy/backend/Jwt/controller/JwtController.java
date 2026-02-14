@@ -1,8 +1,8 @@
-package com.lendy.backend.Jwt.controller;
+package com.lendy.backend.jwt.controller;
 
-import com.lendy.backend.Jwt.dto.JWTResponseDTO;
-import com.lendy.backend.Jwt.dto.RefreshRequestDTO;
-import com.lendy.backend.Jwt.service.JwtService;
+import com.lendy.backend.jwt.dto.JWTResponseDTO;
+import com.lendy.backend.jwt.dto.RefreshRequestDTO;
+import com.lendy.backend.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

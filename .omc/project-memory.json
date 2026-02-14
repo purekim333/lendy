@@ -123,8 +123,8 @@
     },
     {
       "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\service\\OrderService.java",
-      "accessCount": 10,
-      "lastAccessed": 1771045853958,
+      "accessCount": 12,
+      "lastAccessed": 1771078800384,
       "type": "file"
     },
     {
@@ -135,8 +135,14 @@
     },
     {
       "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\controller\\OrderController.java",
+      "accessCount": 8,
+      "lastAccessed": 1771078790902,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\controller\\ProductController.java",
       "accessCount": 6,
-      "lastAccessed": 1771045857250,
+      "lastAccessed": 1771078790123,
       "type": "file"
     },
     {
@@ -152,6 +158,18 @@
       "type": "file"
     },
     {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\repository\\ProductOptionRepository.java",
+      "accessCount": 5,
+      "lastAccessed": 1771078790516,
+      "type": "file"
+    },
+    {
+      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\repository\\OrderRepository.java",
+      "accessCount": 5,
+      "lastAccessed": 1771078791263,
+      "type": "file"
+    },
+    {
       "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\entity\\Order.java",
       "accessCount": 4,
       "lastAccessed": 1771045803129,
@@ -164,12 +182,6 @@
       "type": "file"
     },
     {
-      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\controller\\ProductController.java",
-      "accessCount": 4,
-      "lastAccessed": 1771045883367,
-      "type": "file"
-    },
-    {
       "path": "frontend\\src\\App.tsx",
       "accessCount": 4,
       "lastAccessed": 1771045953357,
@@ -179,18 +191,6 @@
       "path": "C:\\Users\\Kim\\.claude\\settings.json",
       "accessCount": 3,
       "lastAccessed": 1771003585248,
-      "type": "file"
-    },
-    {
-      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\Product\\repository\\ProductOptionRepository.java",
-      "accessCount": 3,
-      "lastAccessed": 1771045789738,
-      "type": "file"
-    },
-    {
-      "path": "backend\\src\\main\\java\\com\\lendy\\backend\\orders\\repository\\OrderRepository.java",
-      "accessCount": 3,
-      "lastAccessed": 1771045819187,
       "type": "file"
     },
     {

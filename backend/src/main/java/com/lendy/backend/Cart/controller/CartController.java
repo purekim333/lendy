@@ -1,7 +1,7 @@
-package com.lendy.backend.Cart.controller;
+package com.lendy.backend.cart.controller;
 
-import com.lendy.backend.Cart.dto.CartResponse;
-import com.lendy.backend.Cart.service.CartService;
+import com.lendy.backend.cart.dto.CartResponse;
+import com.lendy.backend.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

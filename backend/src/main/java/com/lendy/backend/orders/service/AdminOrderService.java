@@ -13,16 +13,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminOrderService {
 
     private final OrderRepository orderRepository;
 
-    @Transactional(readOnly = true)
-    public Page<Order> listOrders(Pageable pageable) {
+    public Page<Order> listOrders(OrderStatus status, Pageable pageable) {
+        if (status != null) {
+            return orderRepository.findByStatus(status, pageable);
+        }
         return orderRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    @Transactional(readOnly = true)
     public Order getOrder(String orderCode) {
         return orderRepository.findByOrderCode(orderCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));

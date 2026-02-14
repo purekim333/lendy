@@ -1,8 +1,8 @@
-package com.lendy.backend.Product.controller;
+package com.lendy.backend.product.controller;
 
-import com.lendy.backend.Product.dto.ProductDetailResponseDTO;
-import com.lendy.backend.Product.dto.ProductResponseDTO;
-import com.lendy.backend.Product.service.ProductService;
+import com.lendy.backend.product.dto.ProductDetailResponseDTO;
+import com.lendy.backend.product.dto.ProductResponseDTO;
+import com.lendy.backend.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

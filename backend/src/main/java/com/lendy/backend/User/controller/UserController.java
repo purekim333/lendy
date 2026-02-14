@@ -1,8 +1,8 @@
-package com.lendy.backend.User.controller;
+package com.lendy.backend.user.controller;
 
-import com.lendy.backend.User.dto.UserRequestDTO;
-import com.lendy.backend.User.dto.UserResponseDTO;
-import com.lendy.backend.User.service.UserService;
+import com.lendy.backend.user.dto.UserRequestDTO;
+import com.lendy.backend.user.dto.UserResponseDTO;
+import com.lendy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

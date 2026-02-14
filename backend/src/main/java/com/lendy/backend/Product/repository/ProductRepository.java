@@ -1,6 +1,6 @@
-package com.lendy.backend.Product.repository;
+package com.lendy.backend.product.repository;
 
-import com.lendy.backend.Product.entity.Product;
+import com.lendy.backend.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

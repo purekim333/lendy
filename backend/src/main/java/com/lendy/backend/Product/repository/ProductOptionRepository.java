@@ -1,6 +1,6 @@
-package com.lendy.backend.Product.repository;
+package com.lendy.backend.product.repository;
 
-import com.lendy.backend.Product.entity.ProductOption;
+import com.lendy.backend.product.entity.ProductOption;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

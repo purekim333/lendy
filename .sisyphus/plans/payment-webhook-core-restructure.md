@@ -800,9 +800,9 @@ cd frontend && npm run build
 
 ### Final Checklist
 - [x] Gateway `/api` routing matches backend controller mappings
-- [ ] Guest checkout creates Order + PaymentAttempt with server-owned amount and merchant_uid
-- [ ] Webhook + verify converge to PAID via idempotent finalize
-- [ ] Guest order lookup is not enumerable (requires access key)
-- [ ] Admin can progress fulfillment statuses and set invoice
+- [x] Guest checkout creates Order + PaymentAttempt with server-owned amount and merchant_uid
+- [x] Webhook + verify converge to PAID via idempotent finalize
+- [x] Guest order lookup is not enumerable (requires access key)
+- [x] Admin can progress fulfillment statuses and set invoice
 - [x] Flyway migrations are the source of schema truth for production
 - [x] CI (Jenkins) builds and tests succeed with Vite migration

@@ -1,13 +1,13 @@
-package com.lendy.backend.Cart.service;
+package com.lendy.backend.cart.service;
 
-import com.lendy.backend.Cart.dto.CartItemDto;
-import com.lendy.backend.Cart.dto.CartResponse;
-import com.lendy.backend.Cart.entity.Cart;
-import com.lendy.backend.Cart.repository.CartRepository;
-import com.lendy.backend.Product.entity.ProductOption;
-import com.lendy.backend.Product.repository.ProductOptionRepository;
-import com.lendy.backend.User.entity.UserEntity;
-import com.lendy.backend.User.repository.UserRepository;
+import com.lendy.backend.cart.dto.CartItemDto;
+import com.lendy.backend.cart.dto.CartResponse;
+import com.lendy.backend.cart.entity.Cart;
+import com.lendy.backend.cart.repository.CartRepository;
+import com.lendy.backend.product.entity.ProductOption;
+import com.lendy.backend.product.repository.ProductOptionRepository;
+import com.lendy.backend.user.entity.UserEntity;
+import com.lendy.backend.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
