@@ -43,6 +43,9 @@ public class Order {
     @Column(name = "buyer_email", length = 255)
     private String buyerEmail;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     // Shipping address fields
     @Column(name = "receiver_name", nullable = false, length = 100)
     private String receiverName;
@@ -115,5 +118,15 @@ public class Order {
     public void setTrackingInfo(String carrier, String invoiceNo) {
         this.carrier = carrier;
         this.invoiceNo = invoiceNo;
+    }
+
+    public void setPricingSnapshot(int subtotalAmount, int shippingFee, int totalAmount) {
+        this.subtotalAmount = subtotalAmount;
+        this.shippingFee = shippingFee;
+        this.totalAmount = totalAmount;
+    }
+
+    public void setOrderAccessKeyHash(String hash) {
+        this.orderAccessKeyHash = hash;
     }
 }

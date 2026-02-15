@@ -33,78 +33,76 @@ export default function Main() {
     <div className="min-h-screen flex flex-col bg-white text-gray-800">
 
 
-        {/* 메인 위에 얹는 온보딩 카드 */}
-        {open && (
-          <div className="absolute inset-x-0 bottom-20 flex justify-center z-30 px-4">
-            <div className="relative w-full max-w-md rounded-3xl bg-white/95 p-6 shadow-xl backdrop-blur-sm">
-              {/* 닫기 */}
-              <button
-                aria-label="close"
-                onClick={() => setOpen(false)}
-                className="absolute right-3 top-3 rounded-full p-2 text-gray-400 hover:bg-gray-100"
-              >
-                ✕
-              </button>
+      {/* 메인 위에 얹는 온보딩 카드 */}
+      {open && (
+        <div className="absolute inset-x-0 bottom-20 flex justify-center z-30 px-4">
+          <div className="relative w-full max-w-md rounded-3xl bg-white/95 p-6 shadow-xl backdrop-blur-sm">
+            {/* 닫기 */}
+            <button
+              aria-label="close"
+              onClick={() => setOpen(false)}
+              className="absolute right-3 top-3 rounded-full p-2 text-gray-400 hover:bg-gray-100"
+            >
+              ✕
+            </button>
 
-              <h2 className="text-xl font-extrabold tracking-tight text-gray-900 text-center">
-                LENDY, <span className="font-black">렌탈 구매 서비스</span>
-              </h2>
-              <p className="mt-2 text-center text-sm leading-6 text-gray-500">
-                첫 Lendy의 방문을 환영합니다. <br />
-                더 좋은 서비스를 제공하기 위해 필수정보를 입력해주세요 :)
-              </p>
+            <h2 className="text-xl font-extrabold tracking-tight text-gray-900 text-center">
+              LENDY, <span className="font-black">렌탈 구매 서비스</span>
+            </h2>
+            <p className="mt-2 text-center text-sm leading-6 text-gray-500">
+              첫 Lendy의 방문을 환영합니다. <br />
+              더 좋은 서비스를 제공하기 위해 필수정보를 입력해주세요 :)
+            </p>
 
-              {/* 생년월일 */}
-              <label className="mt-5 block text-sm font-medium text-gray-700">
-                생년월일
-              </label>
-              <div className="mt-2 flex items-center gap-2 rounded-xl border px-3 py-2">
-                <input
-                  type="date"
-                  className="w-full text-sm outline-none bg-transparent"
-                  value={birthday}
-                  onChange={(e) => setBirthday(e.target.value)}
-                />
-              </div>
+            {/* 생년월일 */}
+            <label className="mt-5 block text-sm font-medium text-gray-700">
+              생년월일
+            </label>
+            <div className="mt-2 flex items-center gap-2 rounded-xl border px-3 py-2">
+              <input
+                type="date"
+                className="w-full text-sm outline-none bg-transparent"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+              />
+            </div>
 
-              {/* 성별 */}
-              <div className="mt-4 flex gap-3 justify-center">
-                <button
-                  type="button"
-                  onClick={() => setGender("M")}
-                  className={`h-10 w-32 rounded-full border text-sm font-medium transition ${
-                    gender === "M"
-                      ? "bg-gray-900 text-white border-gray-900"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Men
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setGender("W")}
-                  className={`h-10 w-32 rounded-full border text-sm font-medium transition ${
-                    gender === "W"
-                      ? "bg-emerald-400 text-white border-emerald-400"
-                      : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  Women
-                </button>
-              </div>
-
-              {/* 완료 */}
+            {/* 성별 */}
+            <div className="mt-4 flex gap-3 justify-center">
               <button
                 type="button"
-                disabled={!valid}
-                onClick={handleSubmit}
-                className="mt-6 h-11 w-full rounded-full bg-gray-800 text-white text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={() => setGender("M")}
+                className={`h-10 w-32 rounded-full border text-sm font-medium transition ${gender === "M"
+                    ? "bg-gray-900 text-white border-gray-900"
+                    : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  }`}
               >
-                완료
+                Men
+              </button>
+              <button
+                type="button"
+                onClick={() => setGender("W")}
+                className={`h-10 w-32 rounded-full border text-sm font-medium transition ${gender === "W"
+                    ? "bg-emerald-400 text-white border-emerald-400"
+                    : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                  }`}
+              >
+                Women
               </button>
             </div>
+
+            {/* 완료 */}
+            <button
+              type="button"
+              disabled={!valid}
+              onClick={handleSubmit}
+              className="mt-6 h-11 w-full rounded-full bg-gray-800 text-white text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              완료
+            </button>
           </div>
-        )}
+        </div>
+      )}
 
 
 
@@ -123,6 +121,22 @@ export default function Main() {
         >
           Shop More
         </button>
+      </section>
+
+      {/* --- Quick Shop Button (prominent) --- */}
+      <section className="px-5 py-8 bg-emerald-50">
+        <div className="max-w-md mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-3">지금 바로 쇼핑하기</h2>
+          <p className="text-gray-600 mb-6">
+            트렌디한 스타일을 경험해보세요
+          </p>
+          <button
+            onClick={() => nav("/products")}
+            className="w-full max-w-xs bg-emerald-400 hover:bg-emerald-500 text-gray-900 font-semibold py-4 px-8 rounded-2xl transition shadow-md"
+          >
+            상품 목록 보기
+          </button>
+        </div>
       </section>
 
       {/* --- Main visual 2 --- */}

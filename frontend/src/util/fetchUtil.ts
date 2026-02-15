@@ -7,7 +7,7 @@ export async function refreshAccessToken(): Promise<string> {
   if (!refreshToken) throw new Error("RefreshToken이 없습니다.");
 
   const response = await fetch(
-    `${process.env.REACT_APP_BACKEND_API_BASE_URL}/jwt/refresh`,
+    `/jwt/refresh`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,7 +42,9 @@ export async function fetchWithAccess(
 
   // HeadersInit을 Headers로 정규화 후 Authorization 부착
   const headers = new Headers(options.headers ?? {});
-  headers.set("Authorization", `Bearer ${accessToken}`);
+  if (accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
 
   // 정규화한 headers를 options에 다시 세팅
   options.headers = headers;
@@ -66,10 +68,6 @@ export async function fetchWithAccess(
       // 이후 코드 진행 방지용 throw
       throw err instanceof Error ? err : new Error("토큰 갱신 실패");
     }
-  }
-
-  if (!response.ok) {
-    throw new Error(`HTTP 오류: ${response.status}`);
   }
 
   return response;

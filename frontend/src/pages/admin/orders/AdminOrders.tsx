@@ -107,7 +107,7 @@ export default function AdminOrders() {
     setLoading(true);
     setError(null);
     try {
-      const baseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL || "http://localhost:8080";
+      const baseUrl = "";
       const url = `${baseUrl}/api/v1/admin/orders?page=0&size=1000&sort=createdAt,desc`;
 
       const response = await fetchWithAccess(url);
@@ -190,7 +190,7 @@ export default function AdminOrders() {
   const bulk = async (action: "markPaid" | "markReady" | "markDelivered" | "cancel") => {
     if (!selected.size) return alert("선택된 접수건이 없습니다.");
 
-    const baseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL || "http://localhost:8080";
+    const baseUrl = "";
     const selectedRows = data.filter(r => selected.has(r.lineId));
     const orderCodes = new Set(selectedRows.map(r => r.orderId));
 
@@ -232,7 +232,7 @@ export default function AdminOrders() {
     const row = data.find(r => r.lineId === editingLineId);
     if (!row) return;
 
-    const baseUrl = import.meta.env.VITE_BACKEND_API_BASE_URL || "http://localhost:8080";
+    const baseUrl = "";
 
     try {
       setLoading(true);

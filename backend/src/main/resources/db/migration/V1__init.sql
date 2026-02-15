@@ -17,7 +17,7 @@ CREATE TABLE PRODUCT (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE `USER` (
+CREATE TABLE `USER_ENTITY` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE CART (
     created_at DATETIME(6) NOT NULL,
     PRIMARY KEY (user_entity_id, product_option_id),
     CONSTRAINT uk_cart_user_option UNIQUE (user_entity_id, product_option_id),
-    CONSTRAINT fk_cart_user_entity FOREIGN KEY (user_entity_id) REFERENCES `USER` (id),
+    CONSTRAINT fk_cart_user_entity FOREIGN KEY (user_entity_id) REFERENCES USER_ENTITY (id),
     CONSTRAINT fk_cart_product_option FOREIGN KEY (product_option_id) REFERENCES PRODUCT_OPTION (id)
 );
 

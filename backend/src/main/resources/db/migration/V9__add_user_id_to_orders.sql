@@ -1,0 +1,2 @@
+ALTER TABLE ORDERS ADD COLUMN user_id BIGINT NULL;
+ALTER TABLE ORDERS ADD INDEX idx_orders_user_id (user_id);

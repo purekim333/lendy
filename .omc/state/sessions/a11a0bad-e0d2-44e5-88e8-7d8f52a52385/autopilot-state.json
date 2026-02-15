@@ -1,8 +1,0 @@
-{
-  "active": true,
-  "started_at": "2026-02-14T05:00:32.829Z",
-  "original_prompt": "/autopilot .sisyphus 폴더의 plan들을 읽어보고 내가 계획한 프로젝트를 수행해줘",
-  "session_id": "a11a0bad-e0d2-44e5-88e8-7d8f52a52385",
-  "reinforcement_count": 2,
-  "last_checked_at": "2026-02-14T06:24:23.224Z"
-}

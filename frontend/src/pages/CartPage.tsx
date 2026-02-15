@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { CartItem } from "../types/Cart";
 import { getCart, setCart } from "../utils/cartStorage";
+import { getUser, UserResponse } from "../services/userService";
 
 type Tab = "ALL" | "SELECTED";
 
@@ -9,6 +10,7 @@ export default function CartPage() {
   const navigate = useNavigate();
   const [items, setItems] = useState<CartItem[]>([]);
   const [tab, setTab] = useState<Tab>("ALL");
+  const [user, setUser] = useState<UserResponse | null>(null);
 
   const fmt = (n: number) => n.toLocaleString("ko-KR");
 
@@ -17,12 +19,16 @@ export default function CartPage() {
   const selectedCount = selected.length;
   const selectedTotal = selected.reduce((s, i) => s + i.price * i.qty, 0);
 
-  const FREE_SHIP_TH = 40000; // 4만원 이상 무료배송
+  const FREE_SHIP_TH = 50000; // 5만원 이상 무료배송
   const freeShipProgress = Math.min(1, selectedTotal / FREE_SHIP_TH);
 
   const view = tab === "ALL" ? items : selected;
 
-  useEffect(() => setItems(getCart()), []);
+  useEffect(() => {
+    setItems(getCart());
+    // Fetch user info
+    getUser().then(setUser).catch(() => setUser(null));
+  }, []);
   // useEffect(() => setCart(items), [items]); // 변경 시 로컬스토리지 동기화
 
   useEffect(() => {
@@ -69,7 +75,7 @@ export default function CartPage() {
     <main className="relative mx-auto w-full max-w-[480px] bg-white px-4 pb-32 pt-4">
       {/* 상단 안내 */}
       <h1 className="text-lg font-semibold">
-        <span className="text-emerald-500">다인</span>님, 결제 준비 아이템{" "}
+        <span className="text-emerald-500">{user?.nickname || "고객"}</span>님, 결제 준비 아이템{" "}
         <strong>{allCount}</strong>건이 있어요
       </h1>
 
@@ -96,9 +102,8 @@ export default function CartPage() {
           className="flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 text-sm"
         >
           <span
-            className={`grid h-4 w-4 place-items-center rounded-full border ${
-              allChecked ? "bg-emerald-400 border-emerald-400" : "border-gray-300"
-            }`}
+            className={`grid h-4 w-4 place-items-center rounded-full border ${allChecked ? "bg-emerald-400 border-emerald-400" : "border-gray-300"
+              }`}
           >
             {allChecked ? "✓" : ""}
           </span>
@@ -133,11 +138,10 @@ export default function CartPage() {
                 {/* 체크 */}
                 <button
                   onClick={() => toggleOne(it.key)}
-                  className={`mt-2 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${
-                    it.checked
+                  className={`mt-2 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${it.checked
                       ? "bg-emerald-400 border-emerald-400 text-white"
                       : "border-gray-300 text-transparent"
-                  }`}
+                    }`}
                   aria-label="선택"
                   title="선택"
                 >
@@ -222,11 +226,10 @@ export default function CartPage() {
             <button
               onClick={() => navigate("/payment")}
               disabled={selectedCount === 0}
-              className={`min-w-[160px] rounded-2xl px-6 py-3 text-center text-gray-900 ${
-                selectedCount === 0
+              className={`min-w-[160px] rounded-2xl px-6 py-3 text-center text-gray-900 ${selectedCount === 0
                   ? "bg-emerald-200/60 opacity-60"
                   : "bg-emerald-300/90 hover:bg-emerald-300"
-              }`}
+                }`}
             >
               구매 신청
             </button>

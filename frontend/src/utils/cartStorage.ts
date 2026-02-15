@@ -23,6 +23,7 @@ export function addToCart(newItem: Omit<CartItem, "key" | "checked">) {
   const i = items.findIndex((it) => it.key === key);
   if (i >= 0) {
     items[i].qty += newItem.qty;
+    items[i].productOptionId = newItem.productOptionId; // Ensure latest option ID
     items[i].checked = true;
   } else {
     items.unshift({ ...newItem, key, checked: true });
@@ -31,6 +32,6 @@ export function addToCart(newItem: Omit<CartItem, "key" | "checked">) {
 }
 
 // 장바구니 옷 총 수량
-export function getCartCount(): number {                       
+export function getCartCount(): number {
   return getCart().reduce((sum, it) => sum + (it.qty || 0), 0);
 }

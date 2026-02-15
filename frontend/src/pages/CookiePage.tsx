@@ -1,8 +1,5 @@
-import { access } from "fs";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-const BACKEND_API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL;
 
 export default function CookiePage() {
 
@@ -16,7 +13,7 @@ export default function CookiePage() {
             // 요청
             try {
 
-                const res = await fetch(`${BACKEND_API_BASE_URL}/jwt/exchange`, {
+                const res = await fetch(`/jwt/exchange`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",

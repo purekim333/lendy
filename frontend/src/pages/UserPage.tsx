@@ -4,7 +4,6 @@ import { fetchWithAccess } from "../util/fetchUtil";
 import main1 from "../assets/main1.png"; // 배너 톤 맞추기 위해 재사용
 // 필요 시 위 이미지를 다른 것으로 교체 가능
 
-const BACKEND_API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL ?? "";
 
 type UserInfo = {
   username: string;
@@ -19,7 +18,7 @@ export default function UserPage() {
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
-        const res = await fetchWithAccess(`${BACKEND_API_BASE_URL}/user`, {
+        const res = await fetchWithAccess(`/user`, {
           method: "GET",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -123,7 +122,7 @@ export default function UserPage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <button
             className="rounded-2xl border p-4 text-left hover:bg-gray-50"
-            onClick={() => (window.location.href = "/orders")}
+            onClick={() => (window.location.href = "/my-orders")}
           >
             <span className="block text-sm font-semibold">주문/대여 내역</span>
             <span className="mt-1 block text-xs text-gray-500">

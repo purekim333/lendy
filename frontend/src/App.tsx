@@ -14,6 +14,8 @@ import UserPage from "./pages/UserPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import OrderLookupPage from "./pages/OrderLookupPage";
+import MyOrdersPage from "./pages/MyOrdersPage";
+import MyOrderDetailPage from "./pages/MyOrderDetailPage";
 
 // --- Admin 전용 페이지들 ---
 import AdminLayout from "./pages/admin/layout/AdminLayout";
@@ -89,6 +91,8 @@ export default function App() {
         <Route path="/products/:productId" element={<ProductDetailPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="order-lookup" element={<OrderLookupPage />} />
+        <Route path="my-orders" element={<MyOrdersPage />} />
+        <Route path="my-orders/:orderCode" element={<MyOrderDetailPage />} />
       </Route>
 
       {/* 헤더가 없는 페이지들 */}

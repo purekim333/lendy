@@ -5,12 +5,10 @@ import naverIcon from "../assets/login/naver.png";
 import appleIcon from "../assets/login/apple.png";
 import facebookIcon from "../assets/login/facebook.png";
 
-const BACKEND_API_BASE_URL = import.meta.env.VITE_BACKEND_API_BASE_URL
-
 export default function Login() {
 
     const handleSocialLogin = (provider: String) => {
-        window.location.href = `${BACKEND_API_BASE_URL}/oauth2/authorization/${provider}`
+        window.location.href = `/oauth2/authorization/${provider}`
     };
 
   return (

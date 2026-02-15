@@ -1,7 +1,9 @@
 name: lendy
 services:
   gateway:
-    image: lendy-gateway:latest
+    build:
+      context: ../deploy/gateway
+      dockerfile: Dockerfile
     depends_on: [frontend, backend]
     ports:
       - "80:80"
@@ -9,21 +11,26 @@ services:
     networks: [appnet]
 
   backend:
-    image: lendy-backend:latest
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
     restart: always
     expose: ["8080"]
     environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-prod}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - OAUTH_REDIRECT_BASE=${OAUTH_REDIRECT_BASE}
     depends_on:
       mysql:
         condition: service_healthy
     networks: [appnet]
 
   frontend:
-    image: lendy-frontend:latest
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     restart: always
     expose: ["80"]
     networks: [appnet]

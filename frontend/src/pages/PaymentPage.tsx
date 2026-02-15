@@ -4,6 +4,7 @@ import { requestPayment } from "../services/PaymentService";
 import { checkout, verifyPayment } from "../services/orderService";
 import type { CartItem } from "../types/Cart";
 import { getCart, setCart } from "../utils/cartStorage";
+import { getUser } from "../services/userService";
 
 type Step = "shipping" | "processing" | "success" | "failed";
 
@@ -25,6 +26,7 @@ const PaymentPage: React.FC = () => {
   const [orderCode, setOrderCode] = useState("");
   const [orderAccessKey, setOrderAccessKey] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const fmt = (n: number) => n.toLocaleString("ko-KR");
 
@@ -36,10 +38,15 @@ const PaymentPage: React.FC = () => {
       return;
     }
     setCartItems(selected);
+
+    // Check if user is logged in
+    getUser()
+      .then(() => setIsLoggedIn(true))
+      .catch(() => setIsLoggedIn(false));
   }, [navigate]);
 
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-  const shippingFee = subtotal >= 40000 ? 0 : 3000;
+  const shippingFee = subtotal >= 50000 ? 0 : 3000;
   const total = subtotal + shippingFee;
 
   const handleCheckout = async () => {
@@ -65,9 +72,9 @@ const PaymentPage: React.FC = () => {
 
     try {
       // 1. 주문 생성
-      const checkoutReq = {
+      const checkoutReq: any = {
         items: cartItems.map((item) => ({
-          productOptionId: parseInt(item.productId) || 0,
+          productOptionId: item.productOptionId,
           qty: item.qty,
         })),
         shipping: {
@@ -76,14 +83,18 @@ const PaymentPage: React.FC = () => {
           address1,
           address2,
           zip,
-          deliveryMessage: deliveryMessage || undefined,
+          ...(deliveryMessage && { deliveryMessage }),
         },
-        guest: {
+      };
+
+      // Only add guest info if not logged in
+      if (!isLoggedIn) {
+        checkoutReq.guest = {
           name: receiverName,
           phone,
           email,
-        },
-      };
+        };
+      }
 
       const checkoutRes = await checkout(checkoutReq);
       const { merchantUid, totalAmount, orderCode: code, orderAccessKey: key } = checkoutRes;
@@ -142,29 +153,50 @@ const PaymentPage: React.FC = () => {
           <h1 className="mb-2 text-2xl font-bold">결제 완료</h1>
           <p className="mb-6 text-gray-600">주문이 정상적으로 완료되었습니다.</p>
 
-          <div className="mb-8 rounded-2xl border border-gray-200 p-6 text-left">
-            <div className="mb-3 text-sm font-semibold text-gray-700">주문 조회 정보</div>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">주문번호</span>
-                <span className="font-mono font-semibold">{orderCode}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">조회키</span>
-                <span className="font-mono font-semibold">{orderAccessKey}</span>
-              </div>
+          {isLoggedIn ? (
+            // Logged in users - show link to my orders
+            <div className="mb-8 space-y-3">
+              <button
+                onClick={() => navigate("/my-orders")}
+                className="w-full rounded-2xl bg-emerald-300 py-3 font-semibold hover:bg-emerald-400"
+              >
+                주문 내역 보기
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="w-full rounded-2xl bg-gray-200 py-3 font-semibold hover:bg-gray-300"
+              >
+                홈으로 돌아가기
+              </button>
             </div>
-            <div className="mt-4 rounded-lg bg-sky-50 p-3 text-xs text-gray-600">
-              위 정보로 주문 내역을 조회할 수 있습니다.
-            </div>
-          </div>
+          ) : (
+            // Guest users - show access key
+            <>
+              <div className="mb-8 rounded-2xl border border-gray-200 p-6 text-left">
+                <div className="mb-3 text-sm font-semibold text-gray-700">주문 조회 정보</div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">주문번호</span>
+                    <span className="font-mono font-semibold">{orderCode}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">조회키</span>
+                    <span className="font-mono font-semibold">{orderAccessKey}</span>
+                  </div>
+                </div>
+                <div className="mt-4 rounded-lg bg-sky-50 p-3 text-xs text-gray-600">
+                  위 정보로 주문 내역을 조회할 수 있습니다.
+                </div>
+              </div>
 
-          <button
-            onClick={() => navigate("/")}
-            className="w-full rounded-2xl bg-emerald-300 py-3 font-semibold hover:bg-emerald-400"
-          >
-            홈으로 돌아가기
-          </button>
+              <button
+                onClick={() => navigate("/")}
+                className="w-full rounded-2xl bg-emerald-300 py-3 font-semibold hover:bg-emerald-400"
+              >
+                홈으로 돌아가기
+              </button>
+            </>
+          )}
         </div>
       </main>
     );
