@@ -1,21 +1,51 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-
-// 프로젝트의 실제 인증 훅/컨텍스트로 교체
-function useAuth() {
-  // 예시: { isAuthed, role } 를 리턴하는 훅
-  return { isAuthed: true, role: "ADMIN" as "ADMIN"|"USER"|"GUEST" };
-}
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../hooks/useAuth";
 
 export default function RequireAdmin({ children }: { children: React.ReactNode }) {
-  const { isAuthed, role } = useAuth();
+  const { isLoading, isAuthed, role } = useAuth();
   const loc = useLocation();
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-gray-300 border-t-black rounded-full" />
+      </div>
+    );
+  }
+
   if (!isAuthed) {
-    return <Navigate to="/login-required" state={{ from: loc.pathname }} replace />;
+    return <Navigate to="/login" state={{ from: loc.pathname }} replace />;
   }
+
   if (role !== "ADMIN") {
-    return <Navigate to="/" replace />;
+    return <AccessDenied />;
   }
+
   return <>{children}</>;
+}
+
+function AccessDenied() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-sm mx-4 text-center">
+        <div className="rounded-2xl bg-white p-8 shadow-lg border">
+          <div className="text-5xl mb-4">🔒</div>
+          <h1 className="text-xl font-bold mb-2">접근 권한 없음</h1>
+          <p className="text-sm text-gray-500 mb-6">
+            관리자 권한이 필요합니다.<br />
+            관리자 권한이 필요하면 DB에서 역할을 변경해주세요.
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:opacity-90"
+          >
+            홈으로 돌아가기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }

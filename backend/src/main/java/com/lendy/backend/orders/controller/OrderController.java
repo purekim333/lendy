@@ -77,4 +77,14 @@ public class OrderController {
         GuestOrderResponse response = orderService.getMyOrderDetail(orderCode, user.getId());
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/my/{orderCode}/cancel")
+    public ResponseEntity<Void> cancelMyOrder(@PathVariable String orderCode) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        orderService.cancelMyOrder(orderCode, user.getId());
+        return ResponseEntity.ok().build();
+    }
 }

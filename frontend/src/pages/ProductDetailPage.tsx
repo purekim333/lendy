@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Product, ProductOption } from "../types/Product";
-import { addToCart } from "../utils/cartStorage";
+import { addCartItem } from "../services/cartService";
 import CartToast from "../components/CartToast";
 
 // 더미 리뷰 데이터
@@ -76,22 +76,23 @@ export default function ProductDetailPage() {
   }, [product, size]);
 
 
-  function handleAddToCart() {
+  const [adding, setAdding] = useState(false);
+
+  async function handleAddToCart() {
     if (!product || !selectedOption) {
       alert("옵션을 선택해주세요.");
       return;
     }
-    addToCart({
-      productId: product.id.toString(),
-      productOptionId: selectedOption.id,
-      name: product.productName,
-      img: images[0] ?? "",
-      price: selectedOption.buyPrice, // Use option price
-      size,
-      color: product.color,
-      qty,
-    });
-    setToastOpen(true);
+    if (adding) return;
+    setAdding(true);
+    try {
+      await addCartItem(selectedOption.id, qty);
+      setToastOpen(true);
+    } catch {
+      alert("장바구니 담기에 실패했습니다. 로그인 상태를 확인해주세요.");
+    } finally {
+      setAdding(false);
+    }
   }
 
 

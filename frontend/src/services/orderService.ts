@@ -150,3 +150,13 @@ export async function getMyOrderDetail(orderCode: string): Promise<OrderDetail> 
   if (!response.ok) throw new Error("주문 상세 조회 실패");
   return response.json();
 }
+
+export async function cancelMyOrder(orderCode: string): Promise<void> {
+  const response = await fetchWithAccess(`${API_BASE}/orders/my/${orderCode}/cancel`, {
+    method: "POST",
+  });
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || "주문 취소 실패");
+  }
+}

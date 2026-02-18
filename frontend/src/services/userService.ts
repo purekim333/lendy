@@ -5,6 +5,7 @@ export interface UserResponse {
     social: boolean;
     nickname: string;
     email: string;
+    role: string;
 }
 
 export async function getUser(): Promise<UserResponse> {

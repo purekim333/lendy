@@ -1,82 +1,147 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { CartItem } from "../types/Cart";
-import { getCart, setCart } from "../utils/cartStorage";
 import { getUser, UserResponse } from "../services/userService";
+import {
+  fetchCart,
+  changeCartItemQty,
+  removeCartItem,
+  type CartItemDto,
+} from "../services/cartService";
 
 type Tab = "ALL" | "SELECTED";
 
+// UI 전용: checked 상태는 백엔드에 없으므로 프론트에서 관리
+interface CartViewItem extends CartItemDto {
+  checked: boolean;
+}
+
 export default function CartPage() {
   const navigate = useNavigate();
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartViewItem[]>([]);
   const [tab, setTab] = useState<Tab>("ALL");
   const [user, setUser] = useState<UserResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fmt = (n: number) => n.toLocaleString("ko-KR");
 
   const allCount = items.length;
   const selected = useMemo(() => items.filter((i) => i.checked), [items]);
   const selectedCount = selected.length;
-  const selectedTotal = selected.reduce((s, i) => s + i.price * i.qty, 0);
+  const selectedTotal = selected.reduce(
+    (s, i) => s + i.unitTotalPrice,
+    0,
+  );
 
-  const FREE_SHIP_TH = 50000; // 5만원 이상 무료배송
+  const FREE_SHIP_TH = 50000;
   const freeShipProgress = Math.min(1, selectedTotal / FREE_SHIP_TH);
 
   const view = tab === "ALL" ? items : selected;
 
+  const loadCart = useCallback(async () => {
+    try {
+      const data = await fetchCart();
+      setItems(
+        data.myCart.map((it) => ({ ...it, checked: true })),
+      );
+    } catch {
+      // 비로그인 시 빈 장바구니
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    setItems(getCart());
-    // Fetch user info
+    loadCart();
     getUser().then(setUser).catch(() => setUser(null));
-  }, []);
-  // useEffect(() => setCart(items), [items]); // 변경 시 로컬스토리지 동기화
-
-  useEffect(() => {
-    const onFocus = () => setItems(getCart());
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  }, []);
-
-  function applyAndSave(updater: (prev: CartItem[]) => CartItem[]) {
-    setItems(prev => {
-      const next = updater(prev);
-      setCart(next);
-      return next;
-    });
-  }
+  }, [loadCart]);
 
   function toggleAll(checked: boolean) {
     setItems((prev) => prev.map((it) => ({ ...it, checked })));
   }
-  function toggleOne(key: string) {
-    setItems((prev) =>
-      prev.map((it) => (it.key === key ? { ...it, checked: !it.checked } : it)),
-    );
-  }
-  function incQty(key: string) {
-    setItems((prev) =>
-      prev.map((it) => (it.key === key ? { ...it, qty: it.qty + 1 } : it)),
-    );
-  }
-  function decQty(key: string) {
+
+  function toggleOne(productOptionId: number) {
     setItems((prev) =>
       prev.map((it) =>
-        it.key === key ? { ...it, qty: Math.max(1, it.qty - 1) } : it,
+        it.productOptionId === productOptionId
+          ? { ...it, checked: !it.checked }
+          : it,
       ),
     );
   }
-  function removeOne(key: string) {
-    setItems((prev) => prev.filter((it) => it.key !== key));
+
+  async function incQty(productOptionId: number) {
+    // 낙관적 UI 업데이트
+    setItems((prev) =>
+      prev.map((it) =>
+        it.productOptionId === productOptionId
+          ? {
+              ...it,
+              count: it.count + 1,
+              unitTotalPrice: it.unitPrice * (it.count + 1),
+            }
+          : it,
+      ),
+    );
+    try {
+      await changeCartItemQty(productOptionId, 1);
+    } catch {
+      // 실패 시 서버 데이터로 복구
+      loadCart();
+    }
+  }
+
+  async function decQty(productOptionId: number) {
+    const item = items.find((it) => it.productOptionId === productOptionId);
+    if (!item || item.count <= 1) return;
+
+    setItems((prev) =>
+      prev.map((it) =>
+        it.productOptionId === productOptionId
+          ? {
+              ...it,
+              count: it.count - 1,
+              unitTotalPrice: it.unitPrice * (it.count - 1),
+            }
+          : it,
+      ),
+    );
+    try {
+      await changeCartItemQty(productOptionId, -1);
+    } catch {
+      loadCart();
+    }
+  }
+
+  async function removeOne(productOptionId: number) {
+    setItems((prev) =>
+      prev.filter((it) => it.productOptionId !== productOptionId),
+    );
+    try {
+      await removeCartItem(productOptionId);
+    } catch {
+      loadCart();
+    }
   }
 
   const allChecked = allCount > 0 && items.every((i) => i.checked);
+
+  if (loading) {
+    return (
+      <main className="mx-auto w-full max-w-[480px] py-24 text-center">
+        로딩 중...
+      </main>
+    );
+  }
 
   return (
     <main className="relative mx-auto w-full max-w-[480px] bg-white px-4 pb-32 pt-4">
       {/* 상단 안내 */}
       <h1 className="text-lg font-semibold">
-        <span className="text-emerald-500">{user?.nickname || "고객"}</span>님, 결제 준비 아이템{" "}
-        <strong>{allCount}</strong>건이 있어요
+        <span className="text-emerald-500">
+          {user?.nickname || "고객"}
+        </span>
+        님, 결제 준비 아이템 <strong>{allCount}</strong>건이 있어요
       </h1>
 
       {/* 탭 + 전체선택 */}
@@ -90,20 +155,24 @@ export default function CartPage() {
           </button>
           <button
             onClick={() => setTab("SELECTED")}
-            className={tab === "SELECTED" ? "font-semibold" : "text-gray-500"}
+            className={
+              tab === "SELECTED" ? "font-semibold" : "text-gray-500"
+            }
           >
             선택상품({selectedCount})
           </button>
         </div>
 
-        {/* 전체선택 토글 */}
         <button
           onClick={() => toggleAll(!allChecked)}
           className="flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 text-sm"
         >
           <span
-            className={`grid h-4 w-4 place-items-center rounded-full border ${allChecked ? "bg-emerald-400 border-emerald-400" : "border-gray-300"
-              }`}
+            className={`grid h-4 w-4 place-items-center rounded-full border ${
+              allChecked
+                ? "bg-emerald-400 border-emerald-400"
+                : "border-gray-300"
+            }`}
           >
             {allChecked ? "✓" : ""}
           </span>
@@ -111,9 +180,11 @@ export default function CartPage() {
         </button>
       </div>
 
-      {/* 무료배송 프로그레스 (선택상품 기준) */}
+      {/* 무료배송 프로그레스 */}
       <div className="mt-3">
-        <div className="mb-1 text-xs text-gray-500">4만원 이상 무료 배송 &gt;</div>
+        <div className="mb-1 text-xs text-gray-500">
+          4만원 이상 무료 배송 &gt;
+        </div>
         <div className="h-2 w-full rounded-full bg-gray-200">
           <div
             className="h-2 rounded-full bg-emerald-400 transition-[width]"
@@ -126,22 +197,25 @@ export default function CartPage() {
       <section className="mt-4">
         {view.length === 0 ? (
           <div className="py-16 text-center text-sm text-gray-500">
-            {tab === "ALL" ? "장바구니가 비어 있어요." : "선택된 상품이 없어요."}
+            {tab === "ALL"
+              ? "장바구니가 비어 있어요."
+              : "선택된 상품이 없어요."}
           </div>
         ) : (
           <ul className="space-y-3">
             {view.map((it) => (
               <li
-                key={it.key}
+                key={it.productOptionId}
                 className="flex gap-3 rounded-2xl border border-gray-100 p-3"
               >
                 {/* 체크 */}
                 <button
-                  onClick={() => toggleOne(it.key)}
-                  className={`mt-2 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${it.checked
+                  onClick={() => toggleOne(it.productOptionId)}
+                  className={`mt-2 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${
+                    it.checked
                       ? "bg-emerald-400 border-emerald-400 text-white"
                       : "border-gray-300 text-transparent"
-                    }`}
+                  }`}
                   aria-label="선택"
                   title="선택"
                 >
@@ -150,7 +224,7 @@ export default function CartPage() {
 
                 {/* 썸네일 */}
                 <img
-                  src={it.img}
+                  src={it.imageURL}
                   alt=""
                   className="h-16 w-16 shrink-0 rounded-xl object-cover"
                 />
@@ -158,9 +232,8 @@ export default function CartPage() {
                 {/* 정보 */}
                 <div className="min-w-0 flex-1">
                   <div className="line-clamp-1 text-sm font-medium">
-                    {it.name}
+                    {it.productName}
                   </div>
-                  {/* 의류 대여 문구 제거 요청 반영 */}
                   <div className="mt-1 text-xs text-gray-500">
                     사이즈 {it.size}　·　색상 {it.color}
                   </div>
@@ -170,29 +243,31 @@ export default function CartPage() {
                     <div className="flex items-center gap-2">
                       <button
                         className="rounded-md border px-2 leading-none"
-                        onClick={() => decQty(it.key)}
+                        onClick={() => decQty(it.productOptionId)}
                         aria-label="수량 감소"
                       >
                         –
                       </button>
-                      <span className="w-6 text-center text-sm">{it.qty}</span>
+                      <span className="w-6 text-center text-sm">
+                        {it.count}
+                      </span>
                       <button
                         className="rounded-md border px-2 leading-none"
-                        onClick={() => incQty(it.key)}
+                        onClick={() => incQty(it.productOptionId)}
                         aria-label="수량 증가"
                       >
                         +
                       </button>
                     </div>
                     <div className="text-sm font-semibold">
-                      {fmt(it.price * it.qty)}원
+                      {fmt(it.unitTotalPrice)}원
                     </div>
                   </div>
                 </div>
 
                 {/* 삭제 */}
                 <button
-                  onClick={() => removeOne(it.key)}
+                  onClick={() => removeOne(it.productOptionId)}
                   className="mt-1 grid h-8 w-8 place-items-center rounded-full border border-gray-200 text-gray-500"
                   aria-label="삭제"
                   title="삭제"
@@ -214,11 +289,15 @@ export default function CartPage() {
               <div className="text-xl font-bold">
                 {fmt(selectedTotal)}원
               </div>
-              {/* 선택상품 리스트(요약) */}
               {selectedCount > 0 && (
                 <div className="mt-1 text-xs text-gray-500">
-                  {selected.slice(0, 2).map((s) => s.name).join(", ")}
-                  {selectedCount > 2 ? ` 외 ${selectedCount - 2}건` : ""}
+                  {selected
+                    .slice(0, 2)
+                    .map((s) => s.productName)
+                    .join(", ")}
+                  {selectedCount > 2
+                    ? ` 외 ${selectedCount - 2}건`
+                    : ""}
                 </div>
               )}
             </div>
@@ -226,10 +305,11 @@ export default function CartPage() {
             <button
               onClick={() => navigate("/payment")}
               disabled={selectedCount === 0}
-              className={`min-w-[160px] rounded-2xl px-6 py-3 text-center text-gray-900 ${selectedCount === 0
+              className={`min-w-[160px] rounded-2xl px-6 py-3 text-center text-gray-900 ${
+                selectedCount === 0
                   ? "bg-emerald-200/60 opacity-60"
                   : "bg-emerald-300/90 hover:bg-emerald-300"
-                }`}
+              }`}
             >
               구매 신청
             </button>

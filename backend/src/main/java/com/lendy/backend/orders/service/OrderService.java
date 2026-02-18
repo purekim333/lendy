@@ -87,10 +87,14 @@ public class OrderService {
                 .status(OrderStatus.PAYMENT_PENDING)
                 .build();
 
-        // Process items and calculate totals
+        // Process items: validate stock and calculate totals
         for (CheckoutRequest.CheckoutItem checkoutItem : request.getItems()) {
             ProductOption option = productOptionRepository.findById(checkoutItem.getProductOptionId())
                     .orElseThrow(() -> new IllegalArgumentException("Product option not found: " + checkoutItem.getProductOptionId()));
+
+            // 재고 검증 및 차감
+            option.decreaseStock(checkoutItem.getQty());
+            productOptionRepository.save(option);
 
             int itemTotal = option.getBuyPrice().intValue() * checkoutItem.getQty();
             subtotal.addAndGet(itemTotal);
@@ -206,6 +210,10 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid access key");
         }
 
+        cancelOrderInternal(order, "Guest cancellation");
+    }
+
+    private void cancelOrderInternal(Order order, String reason) {
         // Idempotency - if already cancelled, return success
         if (order.getStatus() == OrderStatus.CANCELLED) {
             return;
@@ -219,7 +227,16 @@ public class OrderService {
 
         // Cancel payment if it was paid
         if (order.getStatus() == OrderStatus.PAID) {
-            paymentService.cancelPayment(order.getMerchantUid(), "Guest cancellation");
+            paymentService.cancelPayment(order.getMerchantUid(), reason);
+        }
+
+        // 재고 복원
+        for (OrderItem item : order.getItems()) {
+            productOptionRepository.findById(item.getProductOptionId())
+                    .ifPresent(option -> {
+                        option.increaseStock(item.getQuantity());
+                        productOptionRepository.save(option);
+                    });
         }
 
         // Update order status
@@ -248,6 +265,19 @@ public class OrderService {
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void cancelMyOrder(String orderCode, Long userId) {
+        Order order = orderRepository.findByOrderCode(orderCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        // 본인 주문인지 확인
+        if (!userId.equals(order.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied to this order");
+        }
+
+        cancelOrderInternal(order, "Member cancellation");
     }
 
     public GuestOrderResponse getMyOrderDetail(String orderCode, Long userId) {

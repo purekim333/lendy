@@ -2,8 +2,10 @@ package com.lendy.backend.product.service;
 
 import com.lendy.backend.product.dto.AdminProductResponseDTO;
 import com.lendy.backend.product.dto.ProductCreateRequestDTO;
+import com.lendy.backend.product.dto.ProductDetailResponseDTO;
 import com.lendy.backend.product.dto.ProductOptionRequestDTO;
 import com.lendy.backend.product.dto.ProductResponseDTO;
+import com.lendy.backend.product.dto.ProductUpdateRequestDTO;
 import com.lendy.backend.product.entity.Product;
 import com.lendy.backend.product.entity.ProductImage;
 import com.lendy.backend.product.entity.ProductOption;
@@ -16,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,4 +151,92 @@ public class ProductAdminService {
         productRepository.save(product);
     }
 
+    @Transactional
+    public ProductDetailResponseDTO getProduct(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+
+        List<ProductOption> options = productOptionRepository.findByProductId(id);
+        List<ProductImage> images = productImageRepository.findByProductId(id);
+
+        return ProductDetailResponseDTO.of(product, options, images);
+    }
+
+    @Transactional
+    public ProductDetailResponseDTO updateProduct(Integer id, ProductUpdateRequestDTO dto, List<MultipartFile> newImages) throws IOException {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+
+        // 기본 정보 업데이트
+        product.setProductName(dto.getName());
+        product.setType(dto.getType());
+        product.setTag(dto.getTag());
+        product.setColor(dto.getColor());
+        product.setDescription(dto.getDescription());
+        product.setBuyPrice(dto.getBuyPrice());
+        product.setRentalPrice(dto.getRentalPrice());
+        product.setThickness(dto.getThickness());
+        product.setElasticity(dto.getElasticity());
+        product.setLining(dto.getLining());
+        product.setHandFeel(dto.getHandFeel());
+        product.setSeeThrough(dto.getSeeThrough());
+        if (dto.getIsPublished() != null) {
+            product.setIsPublished(dto.getIsPublished());
+        }
+        productRepository.save(product);
+
+        // 이미지 처리: keepImageUrls에 없는 기존 이미지 삭제
+        List<ProductImage> existingImages = productImageRepository.findByProductId(id);
+        List<String> keepUrls = dto.getKeepImageUrls() != null ? dto.getKeepImageUrls() : List.of();
+
+        for (ProductImage img : existingImages) {
+            if (!keepUrls.contains(img.getImageURL())) {
+                productImageRepository.delete(img);
+            }
+        }
+
+        // 새 이미지 업로드
+        if (newImages != null && !newImages.isEmpty()) {
+            for (MultipartFile file : newImages) {
+                String url = s3StorageService.uploadImage(file, "product");
+                ProductImage productImage = ProductImage.builder()
+                        .product(product)
+                        .isMain(false)
+                        .imageURL(url)
+                        .build();
+                productImageRepository.save(productImage);
+            }
+        }
+
+        // 남은 이미지 중 메인 이미지가 없으면 첫 번째를 메인으로 설정
+        List<ProductImage> remainingImages = productImageRepository.findByProductId(id);
+        boolean hasMain = remainingImages.stream().anyMatch(ProductImage::getIsMain);
+        if (!hasMain && !remainingImages.isEmpty()) {
+            ProductImage first = remainingImages.get(0);
+            first.setIsMain(true);
+            productImageRepository.save(first);
+        }
+
+        // 옵션 처리: 기존 삭제 후 새로 생성
+        List<ProductOption> existingOptions = productOptionRepository.findByProductId(id);
+        productOptionRepository.deleteAll(existingOptions);
+
+        if (dto.getOptions() != null && !dto.getOptions().isEmpty()) {
+            for (ProductOptionRequestDTO optionDto : dto.getOptions()) {
+                ProductOption option = ProductOption.builder()
+                        .product(product)
+                        .size(optionDto.getSize())
+                        .count(optionDto.getCount())
+                        .buyPrice(optionDto.getBuyPrice())
+                        .rentalPrice(optionDto.getRentalPrice())
+                        .build();
+                productOptionRepository.save(option);
+            }
+        }
+
+        // 최신 데이터 반환
+        List<ProductOption> updatedOptions = productOptionRepository.findByProductId(id);
+        List<ProductImage> updatedImages = productImageRepository.findByProductId(id);
+        return ProductDetailResponseDTO.of(product, updatedOptions, updatedImages);
+    }
 }

@@ -62,4 +62,12 @@ public class UserEntity {
         this.email = dto.getEmail();
         this.nickname = dto.getNickname();
     }
+
+    public void toggleRole() {
+        this.roleType = (this.roleType == UserRoleType.USER) ? UserRoleType.ADMIN : UserRoleType.USER;
+    }
+
+    public void toggleLock() {
+        this.isLock = !this.isLock;
+    }
 }

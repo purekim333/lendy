@@ -37,4 +37,15 @@ public class ProductOption {
         this.rentalPrice = rentalPrice;
     }
 
+    public void decreaseStock(int quantity) {
+        if (this.count < quantity) {
+            throw new IllegalStateException(
+                "재고 부족: " + this.product.getProductName() + " (" + this.size + ") - 남은 수량: " + this.count);
+        }
+        this.count -= quantity;
+    }
+
+    public void increaseStock(int quantity) {
+        this.count += quantity;
+    }
 }

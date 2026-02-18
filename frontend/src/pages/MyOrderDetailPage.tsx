@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMyOrderDetail, OrderDetail } from "../services/orderService";
+import { getMyOrderDetail, cancelMyOrder, OrderDetail } from "../services/orderService";
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
   PAYMENT_PENDING: { label: "결제대기", color: "bg-yellow-100 text-yellow-700" },
@@ -51,6 +51,25 @@ export default function MyOrderDetailPage() {
   };
 
   const canCancel = order?.status === "PAYMENT_PENDING" || order?.status === "PAID";
+  const [cancelling, setCancelling] = useState(false);
+
+  async function handleCancel() {
+    if (!order || !orderCode) return;
+    if (!confirm("정말 주문을 취소하시겠습니까?")) return;
+
+    setCancelling(true);
+    try {
+      await cancelMyOrder(orderCode);
+      alert("주문이 취소되었습니다.");
+      // 상태 새로고침
+      const updated = await getMyOrderDetail(orderCode);
+      setOrder(updated);
+    } catch (err: any) {
+      alert(err.message || "주문 취소에 실패했습니다.");
+    } finally {
+      setCancelling(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -257,10 +276,11 @@ export default function MyOrderDetailPage() {
       {canCancel && (
         <section className="mb-6">
           <button
-            onClick={() => alert("주문 취소 기능은 준비 중입니다.")}
-            className="w-full rounded-2xl border border-red-300 bg-red-50 py-3 font-semibold text-red-700 hover:bg-red-100"
+            onClick={handleCancel}
+            disabled={cancelling}
+            className="w-full rounded-2xl border border-red-300 bg-red-50 py-3 font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
           >
-            주문 취소
+            {cancelling ? "취소 처리 중..." : "주문 취소"}
           </button>
         </section>
       )}

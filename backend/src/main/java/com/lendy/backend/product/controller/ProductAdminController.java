@@ -1,9 +1,9 @@
 package com.lendy.backend.product.controller;
 
 import com.lendy.backend.product.dto.ProductCreateRequestDTO;
+import com.lendy.backend.product.dto.ProductUpdateRequestDTO;
 import com.lendy.backend.product.dto.ProductResponseDTO;
 import com.lendy.backend.product.service.ProductAdminService;
-import com.lendy.backend.product.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -63,4 +63,20 @@ public class ProductAdminController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProduct(@PathVariable Integer id) {
+        return ResponseEntity.ok(productAdminService.getProduct(id));
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateProduct(
+            @PathVariable Integer id,
+            @RequestPart("data") ProductUpdateRequestDTO requestDTO,
+            @RequestPart(value = "images", required = false) List<MultipartFile> newImages) {
+        try {
+            return ResponseEntity.ok(productAdminService.updateProduct(id, requestDTO, newImages));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

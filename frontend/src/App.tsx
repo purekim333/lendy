@@ -16,6 +16,7 @@ import CartPage from "./pages/CartPage";
 import OrderLookupPage from "./pages/OrderLookupPage";
 import MyOrdersPage from "./pages/MyOrdersPage";
 import MyOrderDetailPage from "./pages/MyOrderDetailPage";
+import AddressPage from "./pages/AddressPage";
 
 // --- Admin 전용 페이지들 ---
 import AdminLayout from "./pages/admin/layout/AdminLayout";
@@ -24,6 +25,8 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProductsList from "./pages/admin/products/AdminProductsList";
 import AdminProductCreate from "./pages/admin/products/Create"; // (캔버스에 올려둔 컴포넌트)
 import AdminOrders from "./pages/admin/orders/AdminOrders";
+import AdminProductEdit from "./pages/admin/products/Edit";
+import AdminUsersList from "./pages/admin/users/AdminUsersList";
 
 
 
@@ -93,6 +96,7 @@ export default function App() {
         <Route path="order-lookup" element={<OrderLookupPage />} />
         <Route path="my-orders" element={<MyOrdersPage />} />
         <Route path="my-orders/:orderCode" element={<MyOrderDetailPage />} />
+        <Route path="profile" element={<AddressPage />} />
       </Route>
 
       {/* 헤더가 없는 페이지들 */}
@@ -115,8 +119,10 @@ export default function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="products" element={<AdminProductsList />} />
         <Route path="products/new" element={<AdminProductCreate />} />
+        <Route path="products/:id/edit" element={<AdminProductEdit />} />
         <Route path="orders" element={<AdminOrders />} />
-        {/* 필요 시 추가: users, coupons, banners ... */}
+        <Route path="users" element={<AdminUsersList />} />
+        {/* 필요 시 추가: coupons, banners ... */}
       </Route>
 
       {/* 그 외 */}

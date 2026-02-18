@@ -43,6 +43,24 @@ public class ProductService {
                 .toList();
     }
 
+    public List<ProductResponseDTO> searchProducts(String keyword) {
+        List<Product> products = productRepository.searchByKeyword(keyword);
+
+        if (products.isEmpty()) {
+            return List.of();
+        }
+
+        Map<Integer, String> mainImageMap = productImageRepository.findByProductInAndIsMainTrue(products).stream()
+                .collect(Collectors.toMap(
+                        img -> img.getProduct().getId(),
+                        ProductImage::getImageURL,
+                        (existing, replacement) -> existing));
+
+        return products.stream()
+                .map(product -> ProductResponseDTO.of(product, mainImageMap.get(product.getId())))
+                .toList();
+    }
+
     public ProductDetailResponseDTO getProductById(Integer id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));

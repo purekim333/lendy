@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchWithAccess } from "../../../util/fetchUtil";
+import Toast from "../../../components/admin/Toast";
+import ConfirmDialog from "../../../components/admin/ConfirmDialog";
+import LoadingSpinner from "../../../components/admin/LoadingSpinner";
+import EmptyState from "../../../components/admin/EmptyState";
+import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 
 type AdminProduct = {
   id: number;
@@ -34,6 +39,7 @@ const formatDate = (iso: string) => {
 };
 
 export default function AdminProductsList() {
+  const navigate = useNavigate();
   const [data, setData] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,20 +47,19 @@ export default function AdminProductsList() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(20);
 
+  const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [confirm, setConfirm] = useState<{ title: string; message: string; onConfirm: () => void } | null>(null);
+
   const fetchProducts = async () => {
     setLoading(true);
     setError(null);
     try {
-      const baseUrl = "";
-      const url = `${baseUrl}/api/v1/admin/products?page=0&size=1000`;
-
+      const url = `/api/v1/admin/products?page=0&size=1000`;
       const response = await fetchWithAccess(url);
       const pageData: PageResponse = await response.json();
-
       setData(pageData.content);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch products");
-      console.error("Failed to fetch products:", err);
+      setError(err instanceof Error ? err.message : "상품 목록을 불러올 수 없습니다.");
     } finally {
       setLoading(false);
     }
@@ -79,65 +84,60 @@ export default function AdminProductsList() {
 
   const togglePublish = async (id: number) => {
     try {
-      setLoading(true);
-      const baseUrl = "";
-      await fetchWithAccess(`${baseUrl}/api/v1/admin/products/${id}/publish`, {
-        method: "PUT",
-      });
+      await fetchWithAccess(`/api/v1/admin/products/${id}/publish`, { method: "PUT" });
+      setToast({ type: "success", message: "게시 상태가 변경되었습니다." });
       await fetchProducts();
     } catch (err) {
-      alert(`게시 상태 변경 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
-    } finally {
-      setLoading(false);
+      setToast({ type: "error", message: `게시 상태 변경 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}` });
     }
   };
 
-  const deleteProduct = async (id: number, name: string) => {
-    if (!confirm(`"${name}" 상품을 삭제하시겠습니까?`)) return;
-
+  const deleteProduct = async (id: number) => {
     try {
-      setLoading(true);
-      const baseUrl = "";
-      await fetchWithAccess(`${baseUrl}/api/v1/admin/products/${id}`, {
-        method: "DELETE",
-      });
+      await fetchWithAccess(`/api/v1/admin/products/${id}`, { method: "DELETE" });
+      setToast({ type: "success", message: "상품이 삭제되었습니다." });
       await fetchProducts();
     } catch (err) {
-      alert(`삭제 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
-    } finally {
-      setLoading(false);
+      setToast({ type: "error", message: `삭제 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}` });
     }
   };
 
   return (
     <div className="space-y-4">
+      {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
+      {confirm && (
+        <ConfirmDialog
+          open
+          title={confirm.title}
+          message={confirm.message}
+          variant="danger"
+          confirmText="삭제"
+          onConfirm={() => { confirm.onConfirm(); setConfirm(null); }}
+          onCancel={() => setConfirm(null)}
+        />
+      )}
+
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">상품 목록</h2>
-        <Link to="/admin/products/new" className="px-3 py-2 rounded-xl bg-black text-white">
-          상품 등록
+        <Link to="/admin/products/new" className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:opacity-90 transition-opacity">
+          + 상품 등록
         </Link>
       </div>
 
-      {loading && (
-        <div className="border rounded-2xl bg-white p-6 text-center text-gray-500">
-          상품 데이터를 불러오는 중...
-        </div>
-      )}
+      {loading && !data.length && <LoadingSpinner message="상품 데이터를 불러오는 중..." />}
       {error && (
-        <div className="border rounded-2xl bg-rose-50 border-rose-200 p-6 text-center text-rose-700">
-          오류: {error}
+        <div className="border rounded-2xl bg-rose-50 border-rose-200 p-4 text-sm text-rose-700">
+          {error}
+          <button onClick={fetchProducts} className="ml-3 underline hover:no-underline">다시 시도</button>
         </div>
       )}
 
       <div className="flex items-center gap-3">
         <input
-          className="flex-1 border rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-black/10"
+          className="flex-1 border rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10"
           placeholder="상품명 검색"
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setPage(1);
-          }}
+          onChange={(e) => { setQuery(e.target.value); setPage(1); }}
         />
         <span className="text-sm text-gray-500">{filtered.length}개</span>
       </div>
@@ -146,7 +146,7 @@ export default function AdminProductsList() {
         <table className="min-w-full w-full text-sm">
           <thead className="border-b bg-gray-50">
             <tr>
-              <th className="p-3 text-left w-20">이미지</th>
+              <th className="p-3 text-left w-16">이미지</th>
               <th className="p-3 text-left">상품명</th>
               <th className="p-3 text-left">카테고리</th>
               <th className="p-3 text-right">구매가</th>
@@ -154,64 +154,78 @@ export default function AdminProductsList() {
               <th className="p-3 text-center">옵션수</th>
               <th className="p-3 text-center">게시상태</th>
               <th className="p-3 text-left">등록일</th>
-              <th className="p-3 text-right w-32">액션</th>
+              <th className="p-3 text-right w-40">액션</th>
             </tr>
           </thead>
           <tbody>
             {current.map((p) => (
-              <tr key={p.id} className="border-b last:border-0">
+              <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50/50 transition-colors">
                 <td className="p-3">
                   {p.mainImageUrl ? (
-                    <img
-                      src={p.mainImageUrl}
-                      alt={p.productName}
-                      className="w-12 h-12 object-cover rounded-lg"
-                    />
+                    <img src={p.mainImageUrl} alt={p.productName} className="w-12 h-12 object-cover rounded-lg" />
                   ) : (
                     <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
-                      No Image
+                      No Img
                     </div>
                   )}
                 </td>
                 <td className="p-3 font-medium">{p.productName}</td>
                 <td className="p-3 text-gray-600">{p.type}</td>
-                <td className="p-3 text-right">{formatKRW(p.buyPrice)}</td>
-                <td className="p-3 text-right">{formatKRW(p.rentalPrice)}</td>
+                <td className="p-3 text-right tabular-nums">{formatKRW(p.buyPrice)}</td>
+                <td className="p-3 text-right tabular-nums">{formatKRW(p.rentalPrice)}</td>
                 <td className="p-3 text-center text-gray-500">{p.optionCount}</td>
                 <td className="p-3 text-center">
-                  <span
-                    className={`inline-block text-xs px-2 py-1 rounded-lg border ${
-                      p.isPublished
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-gray-100 text-gray-600 border-gray-200"
-                    }`}
-                  >
+                  <span className={`inline-block text-xs px-2 py-1 rounded-lg border ${
+                    p.isPublished
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : "bg-gray-100 text-gray-600 border-gray-200"
+                  }`}>
                     {p.isPublished ? "게시중" : "미게시"}
                   </span>
                 </td>
                 <td className="p-3 text-gray-500">{formatDate(p.createdAt)}</td>
-                <td className="p-3 text-right">
-                  <div className="flex items-center justify-end gap-2">
+                <td className="p-3">
+                  <div className="flex items-center justify-end gap-1">
                     <button
-                      className="text-blue-600 hover:underline text-xs"
-                      onClick={() => togglePublish(p.id)}
+                      onClick={() => navigate(`/admin/products/${p.id}/edit`)}
+                      className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
+                      title="수정"
                     >
-                      {p.isPublished ? "미게시" : "게시"}
+                      <Pencil size={15} />
                     </button>
                     <button
-                      className="text-rose-600 hover:underline text-xs"
-                      onClick={() => deleteProduct(p.id, p.productName)}
+                      onClick={() => togglePublish(p.id)}
+                      className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+                      title={p.isPublished ? "미게시로 변경" : "게시로 변경"}
                     >
-                      삭제
+                      {p.isPublished ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                    <button
+                      onClick={() =>
+                        setConfirm({
+                          title: "상품 삭제",
+                          message: `"${p.productName}" 상품을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
+                          onConfirm: () => deleteProduct(p.id),
+                        })
+                      }
+                      className="p-1.5 rounded-lg hover:bg-red-50 text-rose-600 transition-colors"
+                      title="삭제"
+                    >
+                      <Trash2 size={15} />
                     </button>
                   </div>
                 </td>
               </tr>
             ))}
-            {current.length === 0 && (
+            {!loading && current.length === 0 && (
               <tr>
-                <td className="p-6 text-center text-gray-500" colSpan={9}>
-                  조건에 맞는 상품이 없습니다.
+                <td className="p-6" colSpan={9}>
+                  <EmptyState
+                    title="상품이 없습니다"
+                    description={query ? "검색 조건에 맞는 상품이 없습니다." : "등록된 상품이 없습니다."}
+                    actionLabel="상품 등록하기"
+                    onAction={() => navigate("/admin/products/new")}
+                  />
                 </td>
               </tr>
             )}
@@ -220,41 +234,25 @@ export default function AdminProductsList() {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-500">
-          페이지 {page}/{pageCount}
+      {pageCount > 1 && (
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-500">페이지 {page}/{pageCount}</div>
+          <div className="flex items-center gap-1">
+            <PagBtn onClick={() => setPage(1)} disabled={page === 1}>« 처음</PagBtn>
+            <PagBtn onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>‹ 이전</PagBtn>
+            <PagBtn onClick={() => setPage(p => Math.min(pageCount, p + 1))} disabled={page === pageCount}>다음 ›</PagBtn>
+            <PagBtn onClick={() => setPage(pageCount)} disabled={page === pageCount}>마지막 »</PagBtn>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            className="px-3 py-2 rounded-xl border disabled:opacity-40"
-            onClick={() => setPage(1)}
-            disabled={page === 1}
-          >
-            « 처음
-          </button>
-          <button
-            className="px-3 py-2 rounded-xl border disabled:opacity-40"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            ‹ 이전
-          </button>
-          <button
-            className="px-3 py-2 rounded-xl border disabled:opacity-40"
-            onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-            disabled={page === pageCount}
-          >
-            다음 ›
-          </button>
-          <button
-            className="px-3 py-2 rounded-xl border disabled:opacity-40"
-            onClick={() => setPage(pageCount)}
-            disabled={page === pageCount}
-          >
-            마지막 »
-          </button>
-        </div>
-      </div>
+      )}
     </div>
+  );
+}
+
+function PagBtn({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button className="px-3 py-1.5 rounded-xl border text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors" {...props}>
+      {children}
+    </button>
   );
 }

@@ -1,6 +1,7 @@
 package com.lendy.backend.user.service;
 
 import com.lendy.backend.jwt.service.JwtService;
+import com.lendy.backend.user.dto.AdminUserResponseDTO;
 import com.lendy.backend.user.dto.CustomOAuth2User;
 import com.lendy.backend.user.dto.UserRequestDTO;
 import com.lendy.backend.user.dto.UserResponseDTO;
@@ -9,6 +10,8 @@ import com.lendy.backend.user.entity.UserEntity;
 import com.lendy.backend.user.entity.UserRoleType;
 import com.lendy.backend.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -230,7 +233,64 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
         UserEntity entity = userRepository.findByUsernameAndIsLock(username, false)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다: " + username));
 
-        return new UserResponseDTO(username, entity.getIsSocial(), entity.getNickname(), entity.getEmail());
+        return new UserResponseDTO(username, entity.getIsSocial(), entity.getNickname(), entity.getEmail(), entity.getRoleType().name());
+    }
+
+    /**
+     * 관리자: 모든 유저 목록 조회 (검색 및 필터링 지원)
+     * @param pageable
+     * @param search
+     * @param role
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<AdminUserResponseDTO> listAllUsers(Pageable pageable, String search, String role) {
+        Page<UserEntity> userPage;
+
+        if (search != null && !search.trim().isEmpty() && role != null && !role.trim().isEmpty()) {
+            // 검색어 + 역할 필터 모두 적용
+            UserRoleType roleType = UserRoleType.valueOf(role.toUpperCase());
+            userPage = userRepository.findByRoleTypeAndUsernameContainingOrRoleTypeAndEmailContaining(
+                    roleType, search, roleType, search, pageable);
+        } else if (search != null && !search.trim().isEmpty()) {
+            // 검색어만 적용
+            userPage = userRepository.findByUsernameContainingOrEmailContaining(search, search, pageable);
+        } else if (role != null && !role.trim().isEmpty()) {
+            // 역할 필터만 적용
+            UserRoleType roleType = UserRoleType.valueOf(role.toUpperCase());
+            userPage = userRepository.findByRoleType(roleType, pageable);
+        } else {
+            // 필터 없음 - 전체 조회
+            userPage = userRepository.findAll(pageable);
+        }
+
+        return userPage.map(AdminUserResponseDTO::from);
+    }
+
+    /**
+     * 관리자: 유저 역할 토글 (USER ↔ ADMIN)
+     * @param id
+     */
+    @Transactional
+    public void toggleUserRole(Long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다: " + id));
+
+        user.toggleRole();
+        userRepository.save(user);
+    }
+
+    /**
+     * 관리자: 유저 잠금 토글
+     * @param id
+     */
+    @Transactional
+    public void toggleUserLock(Long id) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다: " + id));
+
+        user.toggleLock();
+        userRepository.save(user);
     }
 
 }

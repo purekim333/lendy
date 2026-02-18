@@ -40,5 +40,9 @@ public class ProductImage {
         this.isMain = isMain;
         this.imageURL = imageURL;
     }
+
+    public void setIsMain(Boolean isMain) {
+        this.isMain = isMain;
+    }
 }
 

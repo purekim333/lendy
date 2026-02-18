@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestPayment } from "../services/PaymentService";
 import { checkout, verifyPayment } from "../services/orderService";
-import type { CartItem } from "../types/Cart";
-import { getCart, setCart } from "../utils/cartStorage";
+import { fetchCart, clearCart as clearBackendCart, type CartItemDto } from "../services/cartService";
 import { getUser } from "../services/userService";
+import { getAddresses, type Address } from "../services/addressService";
 
 type Step = "shipping" | "processing" | "success" | "failed";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("shipping");
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemDto[]>([]);
 
   // 배송 정보
   const [receiverName, setReceiverName] = useState("");
@@ -27,25 +27,52 @@ const PaymentPage: React.FC = () => {
   const [orderAccessKey, setOrderAccessKey] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
 
   const fmt = (n: number) => n.toLocaleString("ko-KR");
 
-  useEffect(() => {
-    const selected = getCart().filter((i) => i.checked);
-    if (selected.length === 0) {
-      alert("선택된 상품이 없습니다.");
-      navigate("/cart");
-      return;
-    }
-    setCartItems(selected);
+  function applyAddress(addr: Address) {
+    setReceiverName(addr.receiverName);
+    setPhone(addr.phone);
+    setZip(addr.zipCode);
+    setAddress1(addr.address1);
+    setAddress2(addr.address2);
+  }
 
-    // Check if user is logged in
-    getUser()
-      .then(() => setIsLoggedIn(true))
-      .catch(() => setIsLoggedIn(false));
+  useEffect(() => {
+    // 백엔드 장바구니 API에서 데이터 로드
+    fetchCart()
+      .then((data) => {
+        if (data.myCart.length === 0) {
+          alert("장바구니가 비어 있습니다.");
+          navigate("/cart");
+          return;
+        }
+        setCartItems(data.myCart);
+        setIsLoggedIn(true);
+
+        // 저장된 배송지 로드
+        getAddresses()
+          .then((addresses) => {
+            setSavedAddresses(addresses);
+            // 기본 배송지 자동 적용
+            const def = addresses.find((a) => a.isDefault);
+            if (def) applyAddress(def);
+          })
+          .catch(() => {});
+
+        // 이메일 자동 채우기
+        getUser()
+          .then((u) => { if (u.email) setEmail(u.email); })
+          .catch(() => {});
+      })
+      .catch(() => {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+      });
   }, [navigate]);
 
-  const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const subtotal = cartItems.reduce((s, i) => s + i.unitTotalPrice, 0);
   const shippingFee = subtotal >= 50000 ? 0 : 3000;
   const total = subtotal + shippingFee;
 
@@ -75,7 +102,7 @@ const PaymentPage: React.FC = () => {
       const checkoutReq: any = {
         items: cartItems.map((item) => ({
           productOptionId: item.productOptionId,
-          qty: item.qty,
+          qty: item.count,
         })),
         shipping: {
           receiverName,
@@ -101,8 +128,8 @@ const PaymentPage: React.FC = () => {
 
       // 2. 포트원 결제 요청
       const orderName = cartItems.length === 1
-        ? cartItems[0].name
-        : `${cartItems[0].name} 외 ${cartItems.length - 1}건`;
+        ? cartItems[0].productName
+        : `${cartItems[0].productName} 외 ${cartItems.length - 1}건`;
 
       const rsp: any = await requestPayment(
         merchantUid,
@@ -122,11 +149,8 @@ const PaymentPage: React.FC = () => {
       setOrderAccessKey(key);
       setStep("success");
 
-      // 5. 장바구니에서 구매한 항목 제거
-      const remainingItems = getCart().filter(
-        (item) => !cartItems.some((ci) => ci.key === item.key)
-      );
-      setCart(remainingItems);
+      // 5. 백엔드 장바구니 비우기
+      await clearBackendCart().catch(() => {});
 
     } catch (err: any) {
       setErrorMsg(err.message || "결제 처리 중 오류가 발생했습니다.");
@@ -235,21 +259,21 @@ const PaymentPage: React.FC = () => {
         <ul className="space-y-2">
           {cartItems.map((item) => (
             <li
-              key={item.key}
+              key={item.productOptionId}
               className="flex gap-3 rounded-2xl border border-gray-100 p-3"
             >
               <img
-                src={item.img}
+                src={item.imageURL}
                 alt=""
                 className="h-16 w-16 shrink-0 rounded-xl object-cover"
               />
               <div className="flex-1">
-                <div className="text-sm font-medium">{item.name}</div>
+                <div className="text-sm font-medium">{item.productName}</div>
                 <div className="mt-1 text-xs text-gray-500">
-                  {item.size} · {item.color} · 수량 {item.qty}
+                  {item.size} · {item.color} · 수량 {item.count}
                 </div>
                 <div className="mt-1 text-sm font-semibold">
-                  {fmt(item.price * item.qty)}원
+                  {fmt(item.unitTotalPrice)}원
                 </div>
               </div>
             </li>
@@ -260,6 +284,28 @@ const PaymentPage: React.FC = () => {
       {/* 배송 정보 */}
       <section className="mb-6">
         <h2 className="mb-3 text-sm font-semibold text-gray-700">배송 정보</h2>
+
+        {/* 저장된 배송지 선택 */}
+        {savedAddresses.length > 0 && (
+          <div className="mb-3">
+            <select
+              onChange={(e) => {
+                const addr = savedAddresses.find((a) => a.id === Number(e.target.value));
+                if (addr) applyAddress(addr);
+              }}
+              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-400 focus:outline-none"
+              defaultValue=""
+            >
+              <option value="" disabled>저장된 배송지 선택</option>
+              {savedAddresses.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.isDefault ? "[기본] " : ""}{a.label || a.receiverName} - {a.address1}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div className="space-y-3">
           <input
             type="text"
